@@ -529,7 +529,7 @@ const HomeWrapper = styled.div`
       }
 
       .provider-name {
-        color: #667eea;
+        color: #4700B0;
         font-weight: 600;
         font-size: 0.95rem;
         margin-bottom: 0.5rem;
@@ -561,7 +561,7 @@ const HomeWrapper = styled.div`
         .service-price {
           font-size: 1.2rem;
           font-weight: 700;
-          color: #667eea;
+          color: #4700B0;
         }
       }
 
@@ -645,7 +645,7 @@ const HomeWrapper = styled.div`
 
     .feature-icon {
       font-size: 3rem;
-      color: #667eea;
+      color: #4700B0;
       margin-bottom: 1rem;
     }
 

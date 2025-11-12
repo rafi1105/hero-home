@@ -195,7 +195,7 @@ const AddServiceWrapper = styled.div`
       font-size: 2.5rem;
       text-align: center;
       margin-bottom: 0.5rem;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, #4700B0, #764ba2);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -231,7 +231,7 @@ const AddServiceWrapper = styled.div`
         content: '';
         width: 4px;
         height: 20px;
-        background: linear-gradient(135deg, #667eea, #764ba2);
+        background: linear-gradient(135deg, #4700B0, #764ba2);
         border-radius: 2px;
       }
     }
@@ -251,7 +251,7 @@ const AddServiceWrapper = styled.div`
 
       &:focus {
         outline: none;
-        border-color: #667eea;
+        border-color: #4700B0;
         background: ${props => props.$isDark ? '#1a1a2e' : 'white'};
         box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
         transform: translateY(-2px);
@@ -275,7 +275,7 @@ const AddServiceWrapper = styled.div`
     select {
       cursor: pointer;
       appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23667eea' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234700B0' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right 1rem center;
       padding-right: 3rem;

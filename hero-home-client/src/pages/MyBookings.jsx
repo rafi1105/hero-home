@@ -97,7 +97,7 @@ const MyBookings = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case 'upcoming':
-        return '#667eea';
+        return '#4700B0';
       case 'completed':
         return '#2ed573';
       case 'cancelled':
@@ -315,11 +315,11 @@ const MyBookingsWrapper = styled.div`
         transition: all 0.3s ease;
 
         &:hover {
-          border-color: #667eea;
+          border-color: #4700B0;
         }
 
         &.active {
-          background: linear-gradient(135deg, #667eea, #764ba2);
+          background: linear-gradient(135deg, #4700B0, #764ba2);
           color: white;
           border-color: transparent;
         }
@@ -396,7 +396,7 @@ const MyBookingsWrapper = styled.div`
         }
 
         .provider {
-          color: #667eea;
+          color: #4700B0;
           font-weight: 600;
         }
 
@@ -425,7 +425,7 @@ const MyBookingsWrapper = styled.div`
 
           svg {
             font-size: 1.1rem;
-            color: #667eea;
+            color: #4700B0;
           }
         }
       }
@@ -443,7 +443,7 @@ const MyBookingsWrapper = styled.div`
         .price {
           font-size: 1.5rem;
           font-weight: 700;
-          color: #667eea;
+          color: #4700B0;
         }
 
         .action-buttons {
@@ -538,7 +538,7 @@ const ModalContent = styled(motion.div)`
   }
 
   .service-name {
-    color: #667eea;
+    color: #4700B0;
     font-weight: 600;
     margin-bottom: 2rem;
     font-size: 1.1rem;
@@ -602,7 +602,7 @@ const ModalContent = styled(motion.div)`
 
       &:focus {
         outline: none;
-        border-color: #667eea;
+        border-color: #4700B0;
       }
 
       &::placeholder {

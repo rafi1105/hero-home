@@ -1,110 +1,80 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useTheme } from '../../contexts/ThemeContext';
 
 const Checkbox = ({ checked, onChange, label }) => {
+  const { isDarkMode } = useTheme();
+  
   return (
-    <StyledWrapper>
-      <label className="container">
-        {label && <span className="label-text">{label}</span>}
+    <StyledWrapper $isDark={isDarkMode}>
+      <label className="checkbox-container">
         <input type="checkbox" checked={checked} onChange={onChange} />
-        <div className="checkmark" />
+        <svg viewBox="0 0 64 64" height="2em" width="2em">
+          <path
+            d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+            pathLength="575.0541381835938"
+            className="path"
+          ></path>
+        </svg>
+        {label && <span className="label-text">{label}</span>}
       </label>
     </StyledWrapper>
   );
 }
 
 const StyledWrapper = styled.div`
-  .container input {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    opacity: 0;
+  .checkbox-container {
     cursor: pointer;
-    height: 0;
-    width: 0;
-  }
-
-  .container {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     position: relative;
-    cursor: pointer;
-    font-size: 20px;
-    user-select: none;
   }
 
   .label-text {
-    color: var(--text-color);
-    font-size: 16px;
+    color: ${props => props.$isDark ? '#fff' : '#212529'};
+    font-size: 1rem;
+    font-weight: 500;
+    user-select: none;
+    transition: color 0.3s ease;
   }
 
-  .checkmark {
-    position: relative;
-    top: 0;
-    left: 0;
-    height: 1.3em;
-    width: 1.3em;
-    background-color: #2dc38c;
-    border: 3px solid #beddd0;
-    border-radius: 10px;
-    overflow: hidden;
-    border-bottom: 1.5px solid #2dc38c;
-    box-shadow: 0 0 1px #cef1e4, inset 0 -2.5px 3px #62eab8,
-      inset 0 3px 3px rgba(0, 0, 0, 0.34);
-    transition: transform 0.3s ease-in-out;
-  }
-
-  .container input:checked ~ .checkmark {
-    transform: translateY(40px);
-    animation: wipeDown 0.6s ease-in-out forwards;
-  }
-
-  .container input:not(:checked) ~ .checkmark {
-    transform: translateY(-40px);
-    animation: wipeUp 0.6s ease-in-out forwards;
-  }
-
-  @keyframes wipeDown {
-    0% {
-      transform: translateY(0);
-    }
-    100% {
-      transform: translateY(40px);
-    }
-  }
-
-  @keyframes wipeUp {
-    0% {
-      transform: translateY(40);
-    }
-    100% {
-      transform: translateY(0px);
-    }
-  }
-
-  .checkmark:after {
-    content: "";
+  .checkbox-container input[type="checkbox"] {
     position: absolute;
-    display: none;
+    opacity: 0;
+    width: 0;
+    height: 0;
   }
 
-  .container input:checked ~ .checkmark:after {
-    display: block;
+  .checkbox-container svg {
+    overflow: visible;
   }
 
-  .container .checkmark:before {
-    content: "";
-    position: absolute;
-    left: 10px;
-    top: 4px;
-    width: 5px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-    box-shadow: 0 4px 2px rgba(0, 0, 0, 0.34);
-  }`;
+  .path {
+    fill: none;
+    stroke: ${props => props.$isDark ? '#667eea' : '#4700B0'};
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke-dasharray 0.5s ease, stroke-dashoffset 0.5s ease;
+    stroke-dasharray: 241 9999999;
+    stroke-dashoffset: 0;
+  }
+
+  .checkbox-container input[type="checkbox"]:checked ~ svg .path {
+    stroke-dasharray: 70.5096664428711 9999999;
+    stroke-dashoffset: -262.2723388671875;
+    stroke: ${props => props.$isDark ? '#764ba2' : '#4700B0'};
+  }
+
+  .checkbox-container:hover .path {
+    stroke: ${props => props.$isDark ? '#764ba2' : '#667eea'};
+    filter: drop-shadow(0 0 8px rgba(102, 126, 234, 0.4));
+  }
+
+  .checkbox-container input[type="checkbox"]:checked ~ .label-text {
+    color: ${props => props.$isDark ? '#764ba2' : '#4700B0'};
+  }
+`;
 
 export default Checkbox;

@@ -162,7 +162,7 @@ const ProfileWrapper = styled.div`
       width: 120px;
       height: 120px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, #4700B0, #764ba2);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -194,7 +194,7 @@ const ProfileWrapper = styled.div`
 
       .icon {
         font-size: 1.5rem;
-        color: #667eea;
+        color: #4700B0;
         margin-top: 0.3rem;
       }
 
@@ -216,7 +216,7 @@ const ProfileWrapper = styled.div`
       margin-top: 2rem;
       width: 100%;
       padding: 1rem;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, #4700B0, #764ba2);
       color: white;
       border: none;
       border-radius: 10px;
@@ -258,7 +258,7 @@ const ProfileWrapper = styled.div`
 
       &:focus {
         outline: none;
-        border-color: #667eea;
+        border-color: #4700B0;
       }
     }
   }
@@ -279,7 +279,7 @@ const ProfileWrapper = styled.div`
     }
 
     .btn-save {
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, #4700B0, #764ba2);
       color: white;
 
       &:hover:not(:disabled) {

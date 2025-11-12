@@ -142,7 +142,7 @@ const MyServicesWrapper = styled.div`
 
     .btn-add {
       padding: 0.875rem 1.5rem;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, #4700B0, #764ba2);
       color: white;
       border: none;
       border-radius: 10px;
@@ -175,7 +175,7 @@ const MyServicesWrapper = styled.div`
 
     .btn-add-large {
       padding: 1rem 2rem;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, #4700B0, #764ba2);
       color: white;
       border: none;
       border-radius: 10px;
@@ -248,7 +248,7 @@ const MyServicesWrapper = styled.div`
       }
 
       .category {
-        color: #667eea;
+        color: #4700B0;
         font-weight: 600;
         text-transform: capitalize;
         margin-bottom: 0.8rem;
@@ -269,7 +269,7 @@ const MyServicesWrapper = styled.div`
         .price {
           font-size: 1.3rem;
           font-weight: 700;
-          color: #667eea;
+          color: #4700B0;
         }
 
         .bookings {
@@ -297,7 +297,7 @@ const MyServicesWrapper = styled.div`
         }
 
         .btn-edit {
-          background: linear-gradient(135deg, #667eea, #764ba2);
+          background: linear-gradient(135deg, #4700B0, #764ba2);
           color: white;
 
           &:hover {

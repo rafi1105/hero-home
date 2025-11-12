@@ -241,7 +241,7 @@ const ServicesWrapper = styled.div`
 
       &:focus {
         outline: none;
-        border-color: #667eea;
+        border-color: #4700B0;
       }
 
       &::placeholder {
@@ -258,14 +258,14 @@ const ServicesWrapper = styled.div`
     .clear-btn {
       padding: 0.7rem 1.5rem;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
     }
 
     .filter-btn {
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, #4700B0, #764ba2);
       color: white;
 
       &:hover {
@@ -318,7 +318,7 @@ const ServicesWrapper = styled.div`
           90deg,
           #4700B0,
           #764ba2,
-          #667eea,
+          #4700B0,
           #4700B0
         );
         background-size: 200% 100%;
@@ -429,7 +429,7 @@ const ServicesWrapper = styled.div`
 
       .provider-name {
         font-size: 0.9rem;
-        color: #667eea;
+        color: #4700B0;
         margin-bottom: 0.8rem;
         font-weight: 600;
       }
@@ -461,7 +461,7 @@ const ServicesWrapper = styled.div`
         .service-price {
           font-size: 1.3rem;
           font-weight: 700;
-          color: #667eea;
+          color: #4700B0;
         }
       }
 
