@@ -77,7 +77,7 @@ const Login = () => {
   }
 
   return (
-    <LoginWrapper isDark={isDarkMode}>
+    <LoginWrapper $isDark={isDarkMode}>
       <motion.div
         className="login-container"
         initial={{ opacity: 0, y: 20 }}
@@ -159,7 +159,7 @@ const LoginWrapper = styled.div`
   justify-content: center;
   align-items: center;
   padding: 2rem;
-  background: ${props => props.isDark 
+  background: ${props => props.$isDark 
     ? '#1a0b2e' 
     : '#4700B0'};
 
@@ -169,7 +169,7 @@ const LoginWrapper = styled.div`
   }
 
   .login-card {
-    background: ${props => props.isDark ? '#1a1a2e' : 'white'};
+    background: ${props => props.$isDark ? '#1a1a2e' : 'white'};
     padding: 3rem;
     border-radius: 20px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
@@ -183,12 +183,12 @@ const LoginWrapper = styled.div`
       font-weight: 700;
       text-align: center;
       margin-bottom: 0.5rem;
-      color: ${props => props.isDark ? '#fff' : '#212529'};
+      color: ${props => props.$isDark ? '#fff' : '#212529'};
     }
 
     .subtitle {
       text-align: center;
-      color: ${props => props.isDark ? '#aaa' : '#6c757d'};
+      color: ${props => props.$isDark ? '#aaa' : '#6c757d'};
       margin-bottom: 2rem;
     }
   }
@@ -200,17 +200,17 @@ const LoginWrapper = styled.div`
       display: block;
       margin-bottom: 0.5rem;
       font-weight: 600;
-      color: ${props => props.isDark ? '#fff' : '#212529'};
+      color: ${props => props.$isDark ? '#fff' : '#212529'};
     }
 
     input {
       width: 100%;
       padding: 0.875rem 1rem;
-      border: 2px solid ${props => props.isDark ? '#2d2d44' : '#e0e0e0'};
+      border: 2px solid ${props => props.$isDark ? '#2d2d44' : '#e0e0e0'};
       border-radius: 10px;
       font-size: 1rem;
-      background: ${props => props.isDark ? '#0f0f1e' : 'white'};
-      color: ${props => props.isDark ? '#fff' : '#212529'};
+      background: ${props => props.$isDark ? '#0f0f1e' : 'white'};
+      color: ${props => props.$isDark ? '#fff' : '#212529'};
       transition: all 0.3s ease;
 
       &:focus {
@@ -220,7 +220,7 @@ const LoginWrapper = styled.div`
       }
 
       &::placeholder {
-        color: ${props => props.isDark ? '#666' : '#999'};
+        color: ${props => props.$isDark ? '#666' : '#999'};
       }
     }
   }
@@ -239,7 +239,7 @@ const LoginWrapper = styled.div`
       transform: translateY(-50%);
       background: none;
       border: none;
-      color: ${props => props.isDark ? '#aaa' : '#6c757d'};
+      color: ${props => props.$isDark ? '#aaa' : '#6c757d'};
       cursor: pointer;
       font-size: 1.2rem;
       transition: color 0.3s ease;
@@ -303,7 +303,7 @@ const LoginWrapper = styled.div`
       top: 50%;
       width: 40%;
       height: 1px;
-      background: ${props => props.isDark ? '#2d2d44' : '#e0e0e0'};
+      background: ${props => props.$isDark ? '#2d2d44' : '#e0e0e0'};
     }
 
     &::before {
@@ -315,9 +315,9 @@ const LoginWrapper = styled.div`
     }
 
     span {
-      background: ${props => props.isDark ? '#1a1a2e' : 'white'};
+      background: ${props => props.$isDark ? '#1a1a2e' : 'white'};
       padding: 0 1rem;
-      color: ${props => props.isDark ? '#aaa' : '#6c757d'};
+      color: ${props => props.$isDark ? '#aaa' : '#6c757d'};
       font-weight: 600;
     }
   }
@@ -325,9 +325,9 @@ const LoginWrapper = styled.div`
   .btn-google {
     width: 100%;
     padding: 1rem;
-    background: ${props => props.isDark ? '#0f0f1e' : 'white'};
-    color: ${props => props.isDark ? '#fff' : '#212529'};
-    border: 2px solid ${props => props.isDark ? '#2d2d44' : '#e0e0e0'};
+    background: ${props => props.$isDark ? '#0f0f1e' : 'white'};
+    color: ${props => props.$isDark ? '#fff' : '#212529'};
+    border: 2px solid ${props => props.$isDark ? '#2d2d44' : '#e0e0e0'};
     border-radius: 10px;
     font-size: 1rem;
     font-weight: 600;
@@ -345,7 +345,7 @@ const LoginWrapper = styled.div`
 
     &:hover:not(:disabled) {
       border-color: #667eea;
-      background: ${props => props.isDark ? '#1a1a2e' : '#f8f9fa'};
+      background: ${props => props.$isDark ? '#1a1a2e' : '#f8f9fa'};
     }
 
     &:disabled {
@@ -357,7 +357,7 @@ const LoginWrapper = styled.div`
   .signup-link {
     margin-top: 2rem;
     text-align: center;
-    color: ${props => props.isDark ? '#aaa' : '#6c757d'};
+    color: ${props => props.$isDark ? '#aaa' : '#6c757d'};
 
     a {
       color: #667eea;
@@ -373,3 +373,4 @@ const LoginWrapper = styled.div`
 `;
 
 export default Login;
+

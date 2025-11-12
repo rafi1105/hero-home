@@ -60,6 +60,28 @@ const serviceSchema = new mongoose.Schema({
       default: 0
     }
   },
+  reviews: [{
+    userId: String,
+    userName: String,
+    bookingId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Booking'
+    },
+    rating: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 5
+    },
+    comment: {
+      type: String,
+      required: true
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now
+    }
+  }],
   bookingCount: {
     type: Number,
     default: 0

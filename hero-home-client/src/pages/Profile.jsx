@@ -11,13 +11,14 @@ const Profile = () => {
   const { isDarkMode } = useTheme();
   const [isEditing, setIsEditing] = useState(false);
   const [displayName, setDisplayName] = useState(currentUser?.displayName || '');
+  const [photoURL, setPhotoURL] = useState(currentUser?.photoURL || '');
   const [loading, setLoading] = useState(false);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await updateUserProfile({ displayName });
+      await updateUserProfile({ displayName, photoURL });
       toast.success('Profile updated successfully!');
       setIsEditing(false);
     } catch (error) {
@@ -29,7 +30,7 @@ const Profile = () => {
   };
 
   return (
-    <ProfileWrapper isDark={isDarkMode}>
+    <ProfileWrapper $isDark={isDarkMode}>
       <div className="container">
         <motion.div
           className="profile-card"
@@ -59,6 +60,17 @@ const Profile = () => {
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
                     placeholder="Enter your name"
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="photoURL">Photo URL</label>
+                  <input
+                    type="url"
+                    id="photoURL"
+                    value={photoURL}
+                    onChange={(e) => setPhotoURL(e.target.value)}
+                    placeholder="Enter photo URL"
                   />
                 </div>
                 <div className="button-group">
@@ -71,6 +83,7 @@ const Profile = () => {
                     onClick={() => {
                       setIsEditing(false);
                       setDisplayName(currentUser?.displayName || '');
+                      setPhotoURL(currentUser?.photoURL || '');
                     }}
                   >
                     Cancel
@@ -93,6 +106,20 @@ const Profile = () => {
                     <p>{currentUser?.email}</p>
                   </div>
                 </div>
+                <div className="info-item">
+                  <FaUser className="icon" />
+                  <div>
+                    <label>Last Login</label>
+                    <p>{currentUser?.metadata?.lastSignInTime ? new Date(currentUser.metadata.lastSignInTime).toLocaleString() : 'N/A'}</p>
+                  </div>
+                </div>
+                <div className="info-item">
+                  <FaUser className="icon" />
+                  <div>
+                    <label>Account Created</label>
+                    <p>{currentUser?.metadata?.creationTime ? new Date(currentUser.metadata.creationTime).toLocaleString() : 'N/A'}</p>
+                  </div>
+                </div>
                 <button className="btn-edit" onClick={() => setIsEditing(true)}>
                   <FaEdit /> Edit Profile
                 </button>
@@ -108,7 +135,7 @@ const Profile = () => {
 const ProfileWrapper = styled.div`
   min-height: calc(100vh - 200px);
   padding: 3rem 0;
-  background: ${props => props.isDark ? '#0f0f1e' : '#f8f9fa'};
+  background: ${props => props.$isDark ? '#0f0f1e' : '#f8f9fa'};
 
   .container {
     max-width: 600px;
@@ -117,7 +144,7 @@ const ProfileWrapper = styled.div`
   }
 
   .profile-card {
-    background: ${props => props.isDark ? '#1a1a2e' : 'white'};
+    background: ${props => props.$isDark ? '#1a1a2e' : 'white'};
     border-radius: 20px;
     padding: 3rem;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
@@ -153,7 +180,7 @@ const ProfileWrapper = styled.div`
 
     h1 {
       font-size: 2rem;
-      color: ${props => props.isDark ? '#fff' : '#212529'};
+      color: ${props => props.$isDark ? '#fff' : '#212529'};
     }
   }
 
@@ -163,7 +190,7 @@ const ProfileWrapper = styled.div`
       align-items: flex-start;
       gap: 1rem;
       padding: 1.5rem 0;
-      border-bottom: 1px solid ${props => props.isDark ? '#2d2d44' : '#e0e0e0'};
+      border-bottom: 1px solid ${props => props.$isDark ? '#2d2d44' : '#e0e0e0'};
 
       .icon {
         font-size: 1.5rem;
@@ -174,14 +201,14 @@ const ProfileWrapper = styled.div`
       label {
         display: block;
         font-size: 0.9rem;
-        color: ${props => props.isDark ? '#aaa' : '#6c757d'};
+        color: ${props => props.$isDark ? '#aaa' : '#6c757d'};
         margin-bottom: 0.3rem;
       }
 
       p {
         font-size: 1.1rem;
         font-weight: 600;
-        color: ${props => props.isDark ? '#fff' : '#212529'};
+        color: ${props => props.$isDark ? '#fff' : '#212529'};
       }
     }
 
@@ -216,17 +243,17 @@ const ProfileWrapper = styled.div`
       display: block;
       margin-bottom: 0.5rem;
       font-weight: 600;
-      color: ${props => props.isDark ? '#fff' : '#212529'};
+      color: ${props => props.$isDark ? '#fff' : '#212529'};
     }
 
     input {
       width: 100%;
       padding: 0.875rem 1rem;
-      border: 2px solid ${props => props.isDark ? '#2d2d44' : '#e0e0e0'};
+      border: 2px solid ${props => props.$isDark ? '#2d2d44' : '#e0e0e0'};
       border-radius: 10px;
       font-size: 1rem;
-      background: ${props => props.isDark ? '#0f0f1e' : 'white'};
-      color: ${props => props.isDark ? '#fff' : '#212529'};
+      background: ${props => props.$isDark ? '#0f0f1e' : 'white'};
+      color: ${props => props.$isDark ? '#fff' : '#212529'};
       transition: all 0.3s ease;
 
       &:focus {
@@ -267,14 +294,15 @@ const ProfileWrapper = styled.div`
     }
 
     .btn-cancel {
-      background: ${props => props.isDark ? '#2d2d44' : '#e0e0e0'};
-      color: ${props => props.isDark ? '#fff' : '#212529'};
+      background: ${props => props.$isDark ? '#2d2d44' : '#e0e0e0'};
+      color: ${props => props.$isDark ? '#fff' : '#212529'};
 
       &:hover {
-        background: ${props => props.isDark ? '#3d3d54' : '#d0d0d0'};
+        background: ${props => props.$isDark ? '#3d3d54' : '#d0d0d0'};
       }
     }
   }
 `;
 
 export default Profile;
+

@@ -6,7 +6,7 @@ const SearchInput = ({ placeholder = "Search...", value, onChange }) => {
   const { isDarkMode } = useTheme();
   
   return (
-    <StyledWrapper isDark={isDarkMode}>
+    <StyledWrapper $isDark={isDarkMode}>
       <div>
         <div className="grid" />
         <div id="poda">
@@ -83,12 +83,12 @@ const StyledWrapper = styled.div`
     filter: blur(3px);
   }
   .input {
-    background-color: ${props => props.isDark ? '#010201' : '#ffffff'};
+    background-color: ${props => props.$isDark ? '#010201' : '#ffffff'};
     border: none;
     width: 460px;
     height: 70px;
     border-radius: 10px;
-    color: ${props => props.isDark ? 'white' : '#1a1a1a'};
+    color: ${props => props.$isDark ? 'white' : '#1a1a1a'};
     padding-inline: 70px;
     font-size: 20px;
   }
@@ -98,7 +98,7 @@ const StyledWrapper = styled.div`
     justify-content: center;
   }
   .input::placeholder {
-    color: ${props => props.isDark ? '#c0b9c0' : '#666666'};
+    color: ${props => props.$isDark ? '#c0b9c0' : '#666666'};
   }
 
   .input:focus {
@@ -114,7 +114,7 @@ const StyledWrapper = styled.div`
     width: 120px;
     height: 25px;
     position: absolute;
-    background: linear-gradient(90deg, transparent, ${props => props.isDark ? 'black' : 'white'});
+    background: linear-gradient(90deg, transparent, ${props => props.$isDark ? 'black' : 'white'});
     top: 23px;
     left: 85px;
   }
@@ -123,7 +123,7 @@ const StyledWrapper = styled.div`
     width: 35px;
     height: 25px;
     position: absolute;
-    background: ${props => props.isDark ? '#cf30aa' : 'rgba(102, 126, 234, 0.5)'};
+    background: ${props => props.$isDark ? '#cf30aa' : 'rgba(102, 126, 234, 0.5)'};
     top: 12px;
     left: 8px;
     filter: blur(20px);
@@ -380,3 +380,4 @@ const StyledWrapper = styled.div`
   }`;
 
 export default SearchInput;
+

@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import { FaEdit, FaTrash, FaStar } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import Loader from '../components/ui/Loader';
+import { servicesAPI } from '../services/api';
 
 const MyServices = () => {
   const { currentUser } = useAuth();
@@ -16,31 +17,19 @@ const MyServices = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchMyServices();
-  }, []);
+    if (currentUser) {
+      fetchMyServices();
+    }
+  }, [currentUser]);
 
   const fetchMyServices = async () => {
     try {
-      // Mock data - replace with API call
-      const mockServices = [
-        {
-          _id: '1',
-          name: 'Professional Plumbing',
-          category: 'plumbing',
-          description: 'Expert plumbing services',
-          price: 50,
-          image: 'https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=500',
-          available: true,
-          bookings: 12
-        }
-      ];
-
-      setTimeout(() => {
-        setServices(mockServices);
-        setLoading(false);
-      }, 1000);
+      const response = await servicesAPI.getMyServices(currentUser.uid);
+      setServices(response.data);
     } catch (error) {
       console.error('Error fetching services:', error);
+      toast.error('Failed to load services');
+    } finally {
       setLoading(false);
     }
   };
@@ -48,17 +37,18 @@ const MyServices = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this service?')) {
       try {
-        // TODO: API call to delete
+        await servicesAPI.delete(id);
         setServices(services.filter(s => s._id !== id));
         toast.success('Service deleted successfully');
       } catch (error) {
+        console.error('Error deleting service:', error);
         toast.error('Failed to delete service');
       }
     }
   };
 
   return (
-    <MyServicesWrapper isDark={isDarkMode}>
+    <MyServicesWrapper $isDark={isDarkMode}>
       <div className="container">
         <div className="header">
           <h1>My Services</h1>
@@ -99,11 +89,11 @@ const MyServices = () => {
                   <p className="description">{service.description}</p>
                   <div className="service-stats">
                     <div className="price">${service.price}/hr</div>
-                    <div className="bookings">{service.bookings} bookings</div>
+                    <div className="bookings">{service.bookingCount || 0} bookings</div>
                   </div>
                   <div className="actions">
-                    <button className="btn-edit" onClick={() => navigate(`/edit-service/${service._id}`)}>
-                      <FaEdit /> Edit
+                    <button className="btn-edit" onClick={() => navigate(`/services/${service._id}`)}>
+                      <FaEdit /> View
                     </button>
                     <button className="btn-delete" onClick={() => handleDelete(service._id)}>
                       <FaTrash /> Delete
@@ -122,7 +112,7 @@ const MyServices = () => {
 const MyServicesWrapper = styled.div`
   min-height: calc(100vh - 200px);
   padding: 3rem 0;
-  background: ${props => props.isDark ? '#0f0f1e' : '#f8f9fa'};
+  background: ${props => props.$isDark ? '#0f0f1e' : '#f8f9fa'};
 
   .container {
     max-width: 1200px;
@@ -143,7 +133,7 @@ const MyServicesWrapper = styled.div`
 
     h1 {
       font-size: 2.5rem;
-      color: ${props => props.isDark ? '#fff' : '#212529'};
+      color: ${props => props.$isDark ? '#fff' : '#212529'};
 
       @media (max-width: 768px) {
         font-size: 2rem;
@@ -173,12 +163,12 @@ const MyServicesWrapper = styled.div`
 
     h2 {
       font-size: 2rem;
-      color: ${props => props.isDark ? '#fff' : '#212529'};
+      color: ${props => props.$isDark ? '#fff' : '#212529'};
       margin-bottom: 1rem;
     }
 
     p {
-      color: ${props => props.isDark ? '#aaa' : '#6c757d'};
+      color: ${props => props.$isDark ? '#aaa' : '#6c757d'};
       margin-bottom: 2rem;
       font-size: 1.1rem;
     }
@@ -212,7 +202,7 @@ const MyServicesWrapper = styled.div`
   }
 
   .service-card {
-    background: ${props => props.isDark ? '#1a1a2e' : 'white'};
+    background: ${props => props.$isDark ? '#1a1a2e' : 'white'};
     border-radius: 15px;
     overflow: hidden;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -254,7 +244,7 @@ const MyServicesWrapper = styled.div`
       h3 {
         font-size: 1.4rem;
         margin-bottom: 0.3rem;
-        color: ${props => props.isDark ? '#fff' : '#212529'};
+        color: ${props => props.$isDark ? '#fff' : '#212529'};
       }
 
       .category {
@@ -265,7 +255,7 @@ const MyServicesWrapper = styled.div`
       }
 
       .description {
-        color: ${props => props.isDark ? '#aaa' : '#6c757d'};
+        color: ${props => props.$isDark ? '#aaa' : '#6c757d'};
         margin-bottom: 1rem;
       }
 
@@ -274,7 +264,7 @@ const MyServicesWrapper = styled.div`
         justify-content: space-between;
         margin-bottom: 1rem;
         padding: 1rem 0;
-        border-top: 1px solid ${props => props.isDark ? '#2d2d44' : '#e0e0e0'};
+        border-top: 1px solid ${props => props.$isDark ? '#2d2d44' : '#e0e0e0'};
 
         .price {
           font-size: 1.3rem;
@@ -283,7 +273,7 @@ const MyServicesWrapper = styled.div`
         }
 
         .bookings {
-          color: ${props => props.isDark ? '#aaa' : '#6c757d'};
+          color: ${props => props.$isDark ? '#aaa' : '#6c757d'};
           font-weight: 600;
         }
       }
@@ -317,7 +307,7 @@ const MyServicesWrapper = styled.div`
         }
 
         .btn-delete {
-          background: ${props => props.isDark ? '#2d2d44' : '#f8f9fa'};
+          background: ${props => props.$isDark ? '#2d2d44' : '#f8f9fa'};
           color: #ff4757;
 
           &:hover {
@@ -331,3 +321,4 @@ const MyServicesWrapper = styled.div`
 `;
 
 export default MyServices;
+

@@ -32,6 +32,8 @@ export const servicesAPI = {
   update: (id, data) => api.put(`/services/${id}`, data),
   delete: (id) => api.delete(`/services/${id}`),
   getMyServices: (userId) => api.get(`/services/user/${userId}`),
+  getTopRated: (limit = 6) => api.get(`/services/top-rated`, { params: { limit } }),
+  addReview: (id, data) => api.post(`/services/${id}/review`, data),
 };
 
 // Bookings API

@@ -7,12 +7,12 @@ const Footer = () => {
   const { isDarkMode } = useTheme();
 
   return (
-    <FooterWrapper isDark={isDarkMode}>
+    <FooterWrapper $isDark={isDarkMode}>
       <div className="footer-content">
         <div className="footer-section">
           <h3 className="footer-title">
-            <span className="logo-icon">🏠</span>
-            HomeHero
+            <img src="/mechanic.png" alt="HomeHero Logo" className="footer-logo-image" />
+            <span className="footer-logo-text">Home Hero</span>
           </h3>
           <p className="footer-description">
             Connect with trusted local service providers. Quality services at your doorstep.
@@ -90,17 +90,23 @@ const Footer = () => {
 };
 
 const FooterWrapper = styled.footer`
-  background: ${props => props.isDark 
-    ? '#1a0b2e' 
-    : '#4700B0'};
+  background: ${props => props.$isDark 
+    ? 'rgba(71, 0, 176, 0.8)' 
+    : 'rgba(71, 0, 176, 0.8)'};
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid ${props => props.$isDark 
+    ? 'rgba(255, 255, 255, 0.1)' 
+    : 'rgba(255, 255, 255, 0.2)'};
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.1);
   color: white;
   padding: 3rem 0 1rem;
   margin-top: auto;
 
   .footer-content {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 2.5rem;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 2rem;
@@ -118,14 +124,27 @@ const FooterWrapper = styled.footer`
       margin-bottom: 1rem;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 1rem;
 
       @media (max-width: 768px) {
         justify-content: center;
       }
 
-      .logo-icon {
-        font-size: 2rem;
+      .footer-logo-image {
+        height: 50px;
+        width: auto;
+        background: white;
+        padding: 6px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      }
+
+      .footer-logo-text {
+        font-family: 'Agbalumo', cursive;
+        font-size: 1.5rem;
+        font-weight: 400;
+        color: white;
+        letter-spacing: 0.5px;
       }
     }
 
@@ -215,9 +234,9 @@ const FooterWrapper = styled.footer`
   }
 
   .footer-bottom {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 1.5rem 2rem 0;
+    padding: 1.5rem 2.5rem 0;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
     justify-content: space-between;
@@ -258,3 +277,4 @@ const FooterWrapper = styled.footer`
 `;
 
 export default Footer;
+

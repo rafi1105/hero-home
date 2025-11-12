@@ -5,7 +5,7 @@ import Service from '../models/Service.js';
 // @access  Public
 export const getServices = async (req, res) => {
   try {
-    const { category, search, limit = 10, page = 1 } = req.query;
+    const { category, search, minPrice, maxPrice, limit = 10, page = 1 } = req.query;
     
     let query = { available: true };
     
@@ -15,6 +15,13 @@ export const getServices = async (req, res) => {
     
     if (search) {
       query.$text = { $search: search };
+    }
+    
+    // Price range filtering using MongoDB operators
+    if (minPrice || maxPrice) {
+      query.price = {};
+      if (minPrice) query.price.$gte = parseFloat(minPrice);
+      if (maxPrice) query.price.$lte = parseFloat(maxPrice);
     }
     
     const services = await Service.find(query)
@@ -114,5 +121,74 @@ export const getMyServices = async (req, res) => {
     res.json(services);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Get top rated services
+// @route   GET /api/services/top-rated
+// @access  Public
+export const getTopRatedServices = async (req, res) => {
+  try {
+    const { limit = 6 } = req.query;
+    
+    const services = await Service.find({ 
+      available: true,
+      'rating.count': { $gt: 0 } // Only services with reviews
+    })
+      .sort({ 'rating.average': -1, 'rating.count': -1 })
+      .limit(parseInt(limit));
+    
+    res.json({ data: services });
+  } catch (error) {
+    console.error('Error in getTopRatedServices:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Add review to service
+// @route   POST /api/services/:id/review
+// @access  Private
+export const addReview = async (req, res) => {
+  try {
+    const { userId, userName, bookingId, rating, comment } = req.body;
+    
+    const service = await Service.findById(req.params.id);
+    
+    if (!service) {
+      return res.status(404).json({ message: 'Service not found' });
+    }
+    
+    // Check if user already reviewed this booking
+    const existingReview = service.reviews.find(
+      review => review.bookingId && review.bookingId.toString() === bookingId
+    );
+    
+    if (existingReview) {
+      return res.status(400).json({ message: 'You have already reviewed this booking' });
+    }
+    
+    // Add review
+    service.reviews.push({
+      userId,
+      userName,
+      bookingId,
+      rating,
+      comment,
+      createdAt: new Date()
+    });
+    
+    // Update rating average and count
+    const totalRatings = service.reviews.reduce((sum, review) => sum + review.rating, 0);
+    service.rating.count = service.reviews.length;
+    service.rating.average = totalRatings / service.reviews.length;
+    
+    await service.save();
+    
+    res.status(201).json({
+      message: 'Review added successfully',
+      service
+    });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
 };

@@ -7,12 +7,14 @@ import Layout from './components/Layout';
 import PrivateRoute from './components/PrivateRoute';
 import Home from './pages/Home';
 import Services from './pages/Services';
+import ServiceDetails from './pages/ServiceDetails';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
 import MyServices from './pages/MyServices';
 import AddService from './pages/AddService';
 import MyBookings from './pages/MyBookings';
+import NotFound from './pages/NotFound';
 
 function App() {
   return (
@@ -23,6 +25,7 @@ function App() {
             <Route path="/" element={<Layout />}>
               <Route index element={<Home />} />
               <Route path="services" element={<Services />} />
+              <Route path="services/:id" element={<ServiceDetails />} />
               <Route path="login" element={<Login />} />
               <Route path="register" element={<Register />} />
               
@@ -59,6 +62,9 @@ function App() {
                   </PrivateRoute>
                 }
               />
+
+              {/* 404 Page */}
+              <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
           <ToastContainer

@@ -6,6 +6,8 @@ import { motion } from 'framer-motion';
 import Loader from '../components/ui/Loader';
 import { FaStar } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { servicesAPI } from '../services/api';
+import { toast } from 'react-toastify';
 
 const Services = () => {
   const { isDarkMode } = useTheme();
@@ -14,87 +16,40 @@ const Services = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [priceRange, setPriceRange] = useState({ min: '', max: '' });
 
   const categories = ['all', 'plumbing', 'electrical', 'cleaning', 'carpentry', 'HVAC', 'painting'];
 
   useEffect(() => {
     fetchServices();
-  }, []);
+  }, [selectedCategory]);
 
   const fetchServices = async () => {
+    setLoading(true);
     try {
-      // Mock data - replace with API call
-      const mockServices = [
-        {
-          _id: '1',
-          name: 'Professional Plumbing',
-          category: 'plumbing',
-          description: 'Expert plumbing services for all your needs. Repairs, installations, and maintenance.',
-          price: 50,
-          image: 'https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=500',
-          rating: 4.8,
-          provider: { name: 'John Doe', verified: true }
-        },
-        {
-          _id: '2',
-          name: 'Electrical Services',
-          category: 'electrical',
-          description: 'Certified electricians for home and office electrical work.',
-          price: 60,
-          image: 'https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=500',
-          rating: 4.9,
-          provider: { name: 'Jane Smith', verified: true }
-        },
-        {
-          _id: '3',
-          name: 'House Cleaning',
-          category: 'cleaning',
-          description: 'Professional cleaning services for homes and offices.',
-          price: 40,
-          image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=500',
-          rating: 4.7,
-          provider: { name: 'Clean Pro', verified: true }
-        },
-        {
-          _id: '4',
-          name: 'Carpentry Work',
-          category: 'carpentry',
-          description: 'Custom carpentry, furniture repair, and woodworking services.',
-          price: 55,
-          image: 'https://images.unsplash.com/photo-1600585152915-d208bec867a1?w=500',
-          rating: 4.6,
-          provider: { name: 'Wood Master', verified: true }
-        },
-        {
-          _id: '5',
-          name: 'HVAC Services',
-          category: 'HVAC',
-          description: 'Heating and cooling system installation and maintenance.',
-          price: 70,
-          image: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=500',
-          rating: 4.8,
-          provider: { name: 'Cool Air', verified: true }
-        },
-        {
-          _id: '6',
-          name: 'Painting Services',
-          category: 'painting',
-          description: 'Interior and exterior painting with quality finishes.',
-          price: 45,
-          image: 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=500',
-          rating: 4.5,
-          provider: { name: 'Color Experts', verified: true }
-        }
-      ];
-
-      setTimeout(() => {
-        setServices(mockServices);
-        setLoading(false);
-      }, 1000);
+      const params = {
+        category: selectedCategory,
+        search: searchTerm || undefined,
+        minPrice: priceRange.min || undefined,
+        maxPrice: priceRange.max || undefined
+      };
+      const response = await servicesAPI.getAll(params);
+      setServices(response.data.services);
     } catch (error) {
       console.error('Error fetching services:', error);
+      toast.error('Failed to load services');
+    } finally {
       setLoading(false);
     }
+  };
+
+  const handlePriceFilter = () => {
+    fetchServices();
+  };
+
+  const clearPriceFilter = () => {
+    setPriceRange({ min: '', max: '' });
+    setTimeout(fetchServices, 0);
   };
 
   const filteredServices = services.filter(service => {
@@ -105,7 +60,7 @@ const Services = () => {
   });
 
   return (
-    <ServicesWrapper isDark={isDarkMode}>
+    <ServicesWrapper $isDark={isDarkMode}>
       <div className="services-header">
         <div className="container">
           <motion.div
@@ -126,7 +81,34 @@ const Services = () => {
               placeholder="Search services..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  fetchServices();
+                }
+              }}
             />
+          </div>
+
+          <div className="price-filter">
+            <input
+              type="number"
+              placeholder="Min Price"
+              value={priceRange.min}
+              onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })}
+              min="0"
+            />
+            <span>to</span>
+            <input
+              type="number"
+              placeholder="Max Price"
+              value={priceRange.max}
+              onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })}
+              min="0"
+            />
+            <button className="filter-btn" onClick={handlePriceFilter}>Apply</button>
+            {(priceRange.min || priceRange.max) && (
+              <button className="clear-btn" onClick={clearPriceFilter}>Clear</button>
+            )}
           </div>
 
           <div className="categories">
@@ -176,7 +158,7 @@ const Services = () => {
                       <div className="service-price">${service.price}/hr</div>
                     </div>
                     <button onClick={() => navigate(`/services/${service._id}`)} className="book-btn">
-                      View Details
+                      <span style={{ position: 'relative', zIndex: 1 }}>View Details</span>
                     </button>
                   </div>
                 </motion.div>
@@ -201,7 +183,7 @@ const ServicesWrapper = styled.div`
   padding-bottom: 3rem;
 
   .services-header {
-    background: ${props => props.isDark 
+    background: ${props => props.$isDark 
       ? '#1a0b2e' 
       : '#4700B0'};
     color: white;
@@ -239,6 +221,75 @@ const ServicesWrapper = styled.div`
     margin-bottom: 2rem;
   }
 
+  .price-filter {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+
+    input {
+      padding: 0.7rem 1rem;
+      border: 2px solid ${props => props.$isDark ? '#2d2d44' : '#e0e0e0'};
+      background: ${props => props.$isDark ? '#1a1a2e' : 'white'};
+      color: ${props => props.$isDark ? '#fff' : '#212529'};
+      border-radius: 8px;
+      font-size: 1rem;
+      width: 140px;
+      transition: all 0.3s ease;
+
+      &:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      &::placeholder {
+        color: ${props => props.$isDark ? '#666' : '#999'};
+      }
+    }
+
+    span {
+      color: ${props => props.$isDark ? '#aaa' : '#6c757d'};
+      font-weight: 600;
+    }
+
+    .filter-btn,
+    .clear-btn {
+      padding: 0.7rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .filter-btn {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      }
+    }
+
+    .clear-btn {
+      background: ${props => props.$isDark ? '#2d2d44' : '#e0e0e0'};
+      color: ${props => props.$isDark ? '#fff' : '#212529'};
+
+      &:hover {
+        background: ${props => props.$isDark ? '#3d3d54' : '#d0d0d0'};
+      }
+    }
+
+    @media (max-width: 768px) {
+      input {
+        width: 120px;
+      }
+    }
+  }
+
   .categories {
     display: flex;
     gap: 1rem;
@@ -247,9 +298,9 @@ const ServicesWrapper = styled.div`
 
     .category-btn {
       padding: 0.7rem 1.5rem;
-      border: 2px solid ${props => props.isDark ? '#2d2d44' : '#e0e0e0'};
-      background: ${props => props.isDark ? '#1a1a2e' : 'white'};
-      color: ${props => props.isDark ? '#fff' : '#212529'};
+      border: 2px solid ${props => props.$isDark ? '#2d2d44' : '#e0e0e0'};
+      background: ${props => props.$isDark ? '#1a1a2e' : 'white'};
+      color: ${props => props.$isDark ? '#fff' : '#212529'};
       border-radius: 25px;
       font-weight: 600;
       cursor: pointer;
@@ -271,7 +322,7 @@ const ServicesWrapper = styled.div`
   .results-count {
     margin-bottom: 2rem;
     font-size: 1.1rem;
-    color: ${props => props.isDark ? '#aaa' : '#6c757d'};
+    color: ${props => props.$isDark ? '#aaa' : '#6c757d'};
     font-weight: 600;
   }
 
@@ -286,7 +337,7 @@ const ServicesWrapper = styled.div`
   }
 
   .service-card {
-    background: ${props => props.isDark ? '#1a1a2e' : 'white'};
+    background: ${props => props.$isDark ? '#1a1a2e' : 'white'};
     border-radius: 15px;
     overflow: hidden;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -332,7 +383,7 @@ const ServicesWrapper = styled.div`
       h3 {
         font-size: 1.4rem;
         margin-bottom: 0.3rem;
-        color: ${props => props.isDark ? '#fff' : '#212529'};
+        color: ${props => props.$isDark ? '#fff' : '#212529'};
       }
 
       .provider-name {
@@ -343,7 +394,7 @@ const ServicesWrapper = styled.div`
       }
 
       .description {
-        color: ${props => props.isDark ? '#aaa' : '#6c757d'};
+        color: ${props => props.$isDark ? '#aaa' : '#6c757d'};
         margin-bottom: 1rem;
         line-height: 1.5;
       }
@@ -374,19 +425,50 @@ const ServicesWrapper = styled.div`
       }
 
       .book-btn {
-        width: 100%;
-        padding: 0.8rem;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
+        position: relative;
+        overflow: hidden;
+        height: 3rem;
+        padding: 0 2rem;
+        border-radius: 1.5rem;
+        background: ${props => props.$isDark ? '#3d3a4e' : '#f5f5f5'};
+        color: ${props => props.$isDark ? '#fff' : '#333'};
         border: none;
-        border-radius: 10px;
-        font-weight: 600;
         cursor: pointer;
-        transition: all 0.3s ease;
+        font-size: 18px;
+        font-weight: 500;
+        width: 100%;
+        transition: color 0.3s;
 
         &:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+          color: #fff;
+        }
+
+        &:hover::before {
+          transform: scaleX(1);
+        }
+
+        &::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          transform: scaleX(0);
+          transform-origin: 0 50%;
+          width: 100%;
+          height: inherit;
+          border-radius: inherit;
+          background: linear-gradient(
+            82.3deg,
+            #4700B0 10.8%,
+            #7b4dff 94.3%
+          );
+          transition: all 0.475s;
+          z-index: 0;
+        }
+
+        span {
+          position: relative;
+          z-index: 1;
         }
       }
     }
@@ -395,12 +477,12 @@ const ServicesWrapper = styled.div`
   .no-results {
     text-align: center;
     padding: 4rem 2rem;
-    color: ${props => props.isDark ? '#aaa' : '#6c757d'};
+    color: ${props => props.$isDark ? '#aaa' : '#6c757d'};
 
     h3 {
       font-size: 2rem;
       margin-bottom: 1rem;
-      color: ${props => props.isDark ? '#fff' : '#212529'};
+      color: ${props => props.$isDark ? '#fff' : '#212529'};
     }
 
     p {
@@ -410,3 +492,4 @@ const ServicesWrapper = styled.div`
 `;
 
 export default Services;
+

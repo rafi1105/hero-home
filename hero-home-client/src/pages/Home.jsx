@@ -8,119 +8,58 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { useTheme } from '../contexts/ThemeContext';
-import axios from 'axios';
+import { servicesAPI } from '../services/api';
+import { toast } from 'react-toastify';
 import Loader from '../components/ui/Loader';
 import { FaStar, FaCheckCircle, FaUsers, FaShieldAlt } from 'react-icons/fa';
 
 const Home = () => {
   const { isDarkMode } = useTheme();
   const navigate = useNavigate();
-  const [services, setServices] = useState([]);
+  const [topRatedServices, setTopRatedServices] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchServices();
+    fetchTopRatedServices();
   }, []);
 
-  const fetchServices = async () => {
+  const fetchTopRatedServices = async () => {
     try {
-      // For now, using mock data. Replace with actual API call later
-      const mockServices = [
-        {
-          _id: '1',
-          name: 'Professional Plumbing',
-          category: 'Plumbing',
-          description: 'Expert plumbing services for all your needs',
-          price: 50,
-          image: 'https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=500',
-          rating: 4.8,
-          provider: { name: 'John Doe' }
-        },
-        {
-          _id: '2',
-          name: 'Electrical Services',
-          category: 'Electrical',
-          description: 'Certified electricians for home and office',
-          price: 60,
-          image: 'https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=500',
-          rating: 4.9,
-          provider: { name: 'Jane Smith' }
-        },
-        {
-          _id: '3',
-          name: 'House Cleaning',
-          category: 'Cleaning',
-          description: 'Professional cleaning services',
-          price: 40,
-          image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=500',
-          rating: 4.7,
-          provider: { name: 'Clean Pro' }
-        },
-        {
-          _id: '4',
-          name: 'Carpentry Work',
-          category: 'Carpentry',
-          description: 'Custom carpentry and furniture repair',
-          price: 55,
-          image: 'https://images.unsplash.com/photo-1600585152915-d208bec867a1?w=500',
-          rating: 4.6,
-          provider: { name: 'Wood Master' }
-        },
-        {
-          _id: '5',
-          name: 'HVAC Services',
-          category: 'HVAC',
-          description: 'Heating and cooling system maintenance',
-          price: 70,
-          image: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=500',
-          rating: 4.8,
-          provider: { name: 'Cool Air' }
-        },
-        {
-          _id: '6',
-          name: 'Painting Services',
-          category: 'Painting',
-          description: 'Interior and exterior painting',
-          price: 45,
-          image: 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=500',
-          rating: 4.5,
-          provider: { name: 'Color Experts' }
-        }
-      ];
-      
-      setTimeout(() => {
-        setServices(mockServices);
-        setLoading(false);
-      }, 1000);
-      
-      // Uncomment when backend is ready:
-      // const response = await axios.get('http://localhost:5000/api/services?limit=6');
-      // setServices(response.data);
-      // setLoading(false);
+      const response = await servicesAPI.getTopRated(6);
+      setTopRatedServices(response.data.data || []);
     } catch (error) {
-      console.error('Error fetching services:', error);
+      console.error('Error fetching top rated services:', error);
+      toast.error('Failed to load top rated services');
+      setTopRatedServices([]);
+    } finally {
       setLoading(false);
     }
   };
 
   const heroSlides = [
     {
-      image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=1200',
+      image: '/banner/banner1.jpg',
       title: 'Find Trusted Service Providers',
       description: 'Connect with verified professionals for all your home service needs',
       buttonText: 'Explore Services'
     },
     {
-      image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200',
+      image: '/banner/banner2.jpg',
       title: 'Quality Services at Your Doorstep',
       description: 'Book appointments with top-rated electricians, plumbers, and more',
       buttonText: 'Get Started'
     },
     {
-      image: 'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1200',
+      image: '/banner/banner3.jpg',
       title: 'Your Home, Our Priority',
       description: 'Professional services with guaranteed satisfaction',
       buttonText: 'Browse Now'
+    },
+    {
+      image: '/banner/banner4.jpg',
+      title: 'Expert Home Solutions',
+      description: 'Trusted professionals ready to help with any home service',
+      buttonText: 'Book Now'
     }
   ];
 
@@ -146,7 +85,7 @@ const Home = () => {
   ];
 
   return (
-    <HomeWrapper isDark={isDarkMode}>
+    <HomeWrapper $$isDark={isDarkMode}>
       {/* Hero Section */}
       <section className="hero-section">
         <Swiper
@@ -173,7 +112,7 @@ const Home = () => {
                   <h1>{slide.title}</h1>
                   <p>{slide.description}</p>
                   <button onClick={() => navigate('/services')} className="hero-btn">
-                    {slide.buttonText}
+                    <span style={{ position: 'relative', zIndex: 1 }}>{slide.buttonText}</span>
                   </button>
                 </motion.div>
               </div>
@@ -182,7 +121,7 @@ const Home = () => {
         </Swiper>
       </section>
 
-      {/* Services Section */}
+      {/* Services Section - Top Rated */}
       <section className="services-section">
         <div className="container">
           <motion.div
@@ -192,15 +131,19 @@ const Home = () => {
             transition={{ duration: 0.6 }}
             className="section-header"
           >
-            <h2>Popular Services</h2>
-            <p>Browse our most requested professional services</p>
+            <h2>⭐ Top Rated Services</h2>
+            <p>Highest rated services based on customer reviews</p>
           </motion.div>
 
           {loading ? (
             <Loader />
+          ) : topRatedServices.length === 0 ? (
+            <div className="no-services">
+              <p>No rated services available yet. Be the first to book and review!</p>
+            </div>
           ) : (
             <div className="services-grid">
-              {services.map((service, index) => (
+              {topRatedServices.map((service, index) => (
                 <motion.div
                   key={service._id}
                   className="service-card"
@@ -213,9 +156,11 @@ const Home = () => {
                   <div className="service-image">
                     <img src={service.image} alt={service.name} />
                     <div className="service-category">{service.category}</div>
+                    <div className="top-rated-badge">⭐ Top Rated</div>
                   </div>
                   <div className="service-content">
                     <h3>{service.name}</h3>
+                    <p className="provider-name">by {service.provider.name}</p>
                     <p>{service.description}</p>
                     <div className="service-footer">
                       <div className="service-rating">
@@ -225,7 +170,7 @@ const Home = () => {
                       <div className="service-price">${service.price}/hr</div>
                     </div>
                     <button onClick={() => navigate(`/services/${service._id}`)} className="book-btn">
-                      Book Now
+                      <span style={{ position: 'relative', zIndex: 1 }}>Book Now</span>
                     </button>
                   </div>
                 </motion.div>
@@ -245,7 +190,7 @@ const Home = () => {
             transition={{ duration: 0.6 }}
             className="section-header"
           >
-            <h2>Why Choose HomeHero?</h2>
+            <h2>Why Choose Home Hero?</h2>
             <p>We make finding trusted service providers simple and reliable</p>
           </motion.div>
 
@@ -380,9 +325,9 @@ const HomeWrapper = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    background: ${props => props.isDark 
-      ? 'rgba(26, 11, 46, 0.85)' 
-      : 'rgba(71, 0, 176, 0.85)'};
+    background: ${props => props.$isDark 
+      ? 'rgba(26, 11, 46, 0.45)' 
+      : 'rgba(0, 0, 0, 0.45)'};
   }
 
   .hero-content {
@@ -420,20 +365,47 @@ const HomeWrapper = styled.div`
     }
 
     .hero-btn {
-      padding: 1rem 2.5rem;
-      font-size: 1.1rem;
-      font-weight: 600;
-      background: white;
-      color: #667eea;
+      position: relative;
+      overflow: hidden;
+      height: 3rem;
+      padding: 0 2rem;
+      border-radius: 1.5rem;
+      background: ${props => props.$isDark ? '#3d3a4e' : '#f5f5f5'};
+      color: ${props => props.$isDark ? '#fff' : '#333'};
       border: none;
-      border-radius: 50px;
       cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      font-size: 18px;
+      font-weight: 500;
+      transition: color 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
       &:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        color: #fff;
+      }
+
+      &:hover::before {
+        transform: scaleX(1);
+      }
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform: scaleX(0);
+        transform-origin: 0 50%;
+        width: 100%;
+        height: inherit;
+        border-radius: inherit;
+        background: linear-gradient(
+          82.3deg,
+          #4700B0 10.8%,
+          #7b4dff 94.3%
+        );
+        transition: all 0.475s;
+        z-index: 0;
       }
     }
   }
@@ -441,7 +413,19 @@ const HomeWrapper = styled.div`
   /* Services Section */
   .services-section {
     padding: 5rem 0;
-    background: ${props => props.isDark ? '#1a1a2e' : '#f8f9fa'};
+    background: ${props => props.$isDark ? '#1a1a2e' : '#f8f9fa'};
+  }
+
+  .no-services {
+    text-align: center;
+    padding: 3rem;
+    background: ${props => props.$isDark ? '#0f0f1e' : 'white'};
+    border-radius: 15px;
+    
+    p {
+      color: ${props => props.$isDark ? '#aaa' : '#6c757d'};
+      font-size: 1.1rem;
+    }
   }
 
   .container {
@@ -458,7 +442,7 @@ const HomeWrapper = styled.div`
       font-size: 2.5rem;
       font-weight: 700;
       margin-bottom: 0.5rem;
-      color: ${props => props.isDark ? '#fff' : '#212529'};
+      color: ${props => props.$isDark ? '#fff' : '#212529'};
 
       @media (max-width: 768px) {
         font-size: 2rem;
@@ -467,7 +451,7 @@ const HomeWrapper = styled.div`
 
     p {
       font-size: 1.1rem;
-      color: ${props => props.isDark ? '#aaa' : '#6c757d'};
+      color: ${props => props.$isDark ? '#aaa' : '#6c757d'};
     }
   }
 
@@ -482,7 +466,7 @@ const HomeWrapper = styled.div`
   }
 
   .service-card {
-    background: ${props => props.isDark ? '#0f0f1e' : 'white'};
+    background: ${props => props.$isDark ? '#0f0f1e' : 'white'};
     border-radius: 15px;
     overflow: hidden;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -518,6 +502,20 @@ const HomeWrapper = styled.div`
         border-radius: 20px;
         font-size: 0.9rem;
         font-weight: 600;
+        text-transform: capitalize;
+      }
+
+      .top-rated-badge {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        background: linear-gradient(135deg, #ffd700, #ffed4e);
+        color: #212529;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        box-shadow: 0 2px 10px rgba(255, 215, 0, 0.4);
       }
     }
 
@@ -527,11 +525,18 @@ const HomeWrapper = styled.div`
       h3 {
         font-size: 1.3rem;
         margin-bottom: 0.5rem;
-        color: ${props => props.isDark ? '#fff' : '#212529'};
+        color: ${props => props.$isDark ? '#fff' : '#212529'};
+      }
+
+      .provider-name {
+        color: #667eea;
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
       }
 
       p {
-        color: ${props => props.isDark ? '#aaa' : '#6c757d'};
+        color: ${props => props.$isDark ? '#aaa' : '#6c757d'};
         margin-bottom: 1rem;
       }
 
@@ -561,19 +566,50 @@ const HomeWrapper = styled.div`
       }
 
       .book-btn {
-        width: 100%;
-        padding: 0.8rem;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
+        position: relative;
+        overflow: hidden;
+        height: 3rem;
+        padding: 0 2rem;
+        border-radius: 1.5rem;
+        background: ${props => props.$isDark ? '#3d3a4e' : '#f5f5f5'};
+        color: ${props => props.$isDark ? '#fff' : '#333'};
         border: none;
-        border-radius: 10px;
-        font-weight: 600;
         cursor: pointer;
-        transition: all 0.3s ease;
+        font-size: 18px;
+        font-weight: 500;
+        width: 100%;
+        transition: color 0.3s;
 
         &:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+          color: #fff;
+        }
+
+        &:hover::before {
+          transform: scaleX(1);
+        }
+
+        &::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          transform: scaleX(0);
+          transform-origin: 0 50%;
+          width: 100%;
+          height: inherit;
+          border-radius: inherit;
+          background: linear-gradient(
+            82.3deg,
+            #4700B0 10.8%,
+            #7b4dff 94.3%
+          );
+          transition: all 0.475s;
+          z-index: 0;
+        }
+
+        span {
+          position: relative;
+          z-index: 1;
         }
       }
     }
@@ -582,7 +618,7 @@ const HomeWrapper = styled.div`
   /* Why Choose Us Section */
   .why-choose-section {
     padding: 5rem 0;
-    background: ${props => props.isDark ? '#0f0f1e' : 'white'};
+    background: ${props => props.$isDark ? '#0f0f1e' : 'white'};
   }
 
   .features-grid {
@@ -598,7 +634,7 @@ const HomeWrapper = styled.div`
   .feature-card {
     text-align: center;
     padding: 2rem;
-    background: ${props => props.isDark ? '#1a1a2e' : '#f8f9fa'};
+    background: ${props => props.$isDark ? '#1a1a2e' : '#f8f9fa'};
     border-radius: 15px;
     transition: all 0.3s ease;
 
@@ -616,11 +652,11 @@ const HomeWrapper = styled.div`
     h3 {
       font-size: 1.5rem;
       margin-bottom: 1rem;
-      color: ${props => props.isDark ? '#fff' : '#212529'};
+      color: ${props => props.$isDark ? '#fff' : '#212529'};
     }
 
     p {
-      color: ${props => props.isDark ? '#aaa' : '#6c757d'};
+      color: ${props => props.$isDark ? '#aaa' : '#6c757d'};
       line-height: 1.6;
     }
   }
@@ -628,7 +664,7 @@ const HomeWrapper = styled.div`
   /* Testimonials Section */
   .testimonials-section {
     padding: 5rem 0;
-    background: ${props => props.isDark ? '#1a1a2e' : '#f8f9fa'};
+    background: ${props => props.$isDark ? '#1a1a2e' : '#f8f9fa'};
   }
 
   .testimonials-grid {
@@ -642,7 +678,7 @@ const HomeWrapper = styled.div`
   }
 
   .testimonial-card {
-    background: ${props => props.isDark ? '#0f0f1e' : 'white'};
+    background: ${props => props.$isDark ? '#0f0f1e' : 'white'};
     padding: 2rem;
     border-radius: 15px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -662,7 +698,7 @@ const HomeWrapper = styled.div`
 
       h4 {
         margin-bottom: 0.3rem;
-        color: ${props => props.isDark ? '#fff' : '#212529'};
+        color: ${props => props.$isDark ? '#fff' : '#212529'};
       }
 
       .stars {
@@ -674,10 +710,12 @@ const HomeWrapper = styled.div`
 
     .testimonial-comment {
       font-style: italic;
-      color: ${props => props.isDark ? '#aaa' : '#6c757d'};
+      color: ${props => props.$isDark ? '#aaa' : '#6c757d'};
       line-height: 1.6;
     }
   }
 `;
 
 export default Home;
+
+
