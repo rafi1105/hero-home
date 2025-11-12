@@ -297,25 +297,66 @@ const ServicesWrapper = styled.div`
     justify-content: center;
 
     .category-btn {
+      position: relative;
       padding: 0.7rem 1.5rem;
-      border: 2px solid ${props => props.$isDark ? '#2d2d44' : '#e0e0e0'};
+      border: 2px solid transparent;
       background: ${props => props.$isDark ? '#1a1a2e' : 'white'};
-      color: ${props => props.$isDark ? '#fff' : '#212529'};
-      border-radius: 25px;
+      color: ${props => props.$isDark ? '#fff' : '#4700B0'};
+      border-radius: 20px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
+      background-clip: padding-box;
+      
+      &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 20px;
+        padding: 2px;
+        background: linear-gradient(
+          90deg,
+          #4700B0,
+          #764ba2,
+          #667eea,
+          #4700B0
+        );
+        background-size: 200% 100%;
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        animation: moveBorder 3s linear infinite;
+      }
+
+      &:hover::before {
+        opacity: 1;
+      }
 
       &:hover {
-        border-color: #667eea;
         transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(71, 0, 176, 0.2);
       }
 
       &.active {
-        background: linear-gradient(135deg, #667eea, #764ba2);
+        background: linear-gradient(135deg, #4700B0, #764ba2);
         color: white;
         border-color: transparent;
+        
+        &::before {
+          opacity: 0;
+        }
       }
+    }
+  }
+
+  @keyframes moveBorder {
+    0% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 200% 50%;
     }
   }
 
