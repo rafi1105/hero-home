@@ -26,16 +26,16 @@ const StyledWrapper = styled.div`
   }
 
   .label {
-    height: 60px;
-    width: 120px;
+    height: 36px;
+    width: 72px;
     background-color: #ffffff;
-    border-radius: 30px;
-    -webkit-box-shadow: inset 0 0 5px 4px rgba(255, 255, 255, 1),
-      inset 0 0 20px 1px rgba(0, 0, 0, 0.488), 10px 20px 30px rgba(0, 0, 0, 0.096),
-      inset 0 0 0 3px rgba(0, 0, 0, 0.3);
-    box-shadow: inset 0 0 5px 4px rgba(255, 255, 255, 1),
-      inset 0 0 20px 1px rgba(0, 0, 0, 0.488), 10px 20px 30px rgba(0, 0, 0, 0.096),
-      inset 0 0 0 3px rgba(0, 0, 0, 0.3);
+    border-radius: 18px;
+    -webkit-box-shadow: inset 0 0 3px 2px rgba(255, 255, 255, 1),
+      inset 0 0 12px 1px rgba(0, 0, 0, 0.488), 6px 12px 18px rgba(0, 0, 0, 0.096),
+      inset 0 0 0 2px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 0 3px 2px rgba(255, 255, 255, 1),
+      inset 0 0 12px 1px rgba(0, 0, 0, 0.488), 6px 12px 18px rgba(0, 0, 0, 0.096),
+      inset 0 0 0 2px rgba(0, 0, 0, 0.3);
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -64,7 +64,7 @@ const StyledWrapper = styled.div`
   }
 
   #checkbox:checked ~ .label::before {
-    left: 70px;
+    left: 42px;
     background-color: #000000;
     background-image: linear-gradient(315deg, #000000 0%, #414141 70%);
     -webkit-transition: 0.4s;
@@ -74,8 +74,8 @@ const StyledWrapper = styled.div`
   .label::before {
     position: absolute;
     content: "";
-    height: 40px;
-    width: 40px;
+    height: 24px;
+    width: 24px;
     border-radius: 50%;
     background-color: #000000;
     background-image: linear-gradient(
@@ -84,10 +84,10 @@ const StyledWrapper = styled.div`
       #ffffff 11%,
       #726f6f 62%
     );
-    left: 10px;
-    -webkit-box-shadow: 0 2px 1px rgba(0, 0, 0, 0.3),
-      10px 10px 10px rgba(0, 0, 0, 0.3);
-    box-shadow: 0 2px 1px rgba(0, 0, 0, 0.3), 10px 10px 10px rgba(0, 0, 0, 0.3);
+    left: 6px;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3),
+      6px 6px 6px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3), 6px 6px 6px rgba(0, 0, 0, 0.3);
     -webkit-transition: 0.4s;
     transition: 0.4s;
   }`;

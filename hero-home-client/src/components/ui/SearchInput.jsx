@@ -1,9 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useTheme } from '../../contexts/ThemeContext';
 
 const SearchInput = ({ placeholder = "Search...", value, onChange }) => {
+  const { isDarkMode } = useTheme();
+  
   return (
-    <StyledWrapper>
+    <StyledWrapper isDark={isDarkMode}>
       <div>
         <div className="grid" />
         <div id="poda">
@@ -69,8 +72,8 @@ const StyledWrapper = styled.div`
   .border,
   .darkBorderBg,
   .glow {
-    max-height: 70px;
-    max-width: 314px;
+    max-height: 85px;
+    max-width: 480px;
     height: 100%;
     width: 100%;
     position: absolute;
@@ -80,14 +83,14 @@ const StyledWrapper = styled.div`
     filter: blur(3px);
   }
   .input {
-    background-color: #010201;
+    background-color: ${props => props.isDark ? '#010201' : '#ffffff'};
     border: none;
-    width: 301px;
-    height: 56px;
+    width: 460px;
+    height: 70px;
     border-radius: 10px;
-    color: white;
-    padding-inline: 59px;
-    font-size: 18px;
+    color: ${props => props.isDark ? 'white' : '#1a1a1a'};
+    padding-inline: 70px;
+    font-size: 20px;
   }
   #poda {
     display: flex;
@@ -95,7 +98,7 @@ const StyledWrapper = styled.div`
     justify-content: center;
   }
   .input::placeholder {
-    color: #c0b9c0;
+    color: ${props => props.isDark ? '#c0b9c0' : '#666666'};
   }
 
   .input:focus {
@@ -108,21 +111,21 @@ const StyledWrapper = styled.div`
 
   #input-mask {
     pointer-events: none;
-    width: 100px;
-    height: 20px;
+    width: 120px;
+    height: 25px;
     position: absolute;
-    background: linear-gradient(90deg, transparent, black);
-    top: 18px;
-    left: 70px;
+    background: linear-gradient(90deg, transparent, ${props => props.isDark ? 'black' : 'white'});
+    top: 23px;
+    left: 85px;
   }
   #pink-mask {
     pointer-events: none;
-    width: 30px;
-    height: 20px;
+    width: 35px;
+    height: 25px;
     position: absolute;
-    background: #cf30aa;
-    top: 10px;
-    left: 5px;
+    background: ${props => props.isDark ? '#cf30aa' : 'rgba(102, 126, 234, 0.5)'};
+    top: 12px;
+    left: 8px;
     filter: blur(20px);
     opacity: 0.8;
     transition: all 2s;
@@ -132,8 +135,8 @@ const StyledWrapper = styled.div`
   }
 
   .white {
-    max-height: 63px;
-    max-width: 307px;
+    max-height: 77px;
+    max-width: 473px;
     border-radius: 10px;
     filter: blur(2px);
   }
@@ -162,8 +165,8 @@ const StyledWrapper = styled.div`
     transition: all 2s;
   }
   .border {
-    max-height: 59px;
-    max-width: 303px;
+    max-height: 73px;
+    max-width: 467px;
     border-radius: 11px;
     filter: blur(0.5px);
   }
@@ -191,8 +194,8 @@ const StyledWrapper = styled.div`
     transition: all 2s;
   }
   .darkBorderBg {
-    max-height: 65px;
-    max-width: 312px;
+    max-height: 80px;
+    max-width: 478px;
   }
   .darkBorderBg::before {
     content: "";
@@ -263,8 +266,8 @@ const StyledWrapper = styled.div`
     overflow: hidden;
     filter: blur(30px);
     opacity: 0.4;
-    max-height: 130px;
-    max-width: 354px;
+    max-height: 160px;
+    max-width: 520px;
   }
   .glow:before {
     content: "";
@@ -317,14 +320,14 @@ const StyledWrapper = styled.div`
 
   #filter-icon {
     position: absolute;
-    top: 8px;
-    right: 8px;
+    top: 10px;
+    right: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 2;
-    max-height: 40px;
-    max-width: 38px;
+    max-height: 50px;
+    max-width: 48px;
     height: 100%;
     width: 100%;
 
@@ -335,12 +338,12 @@ const StyledWrapper = styled.div`
     border: 1px solid transparent;
   }
   .filterBorder {
-    height: 42px;
-    width: 40px;
+    height: 52px;
+    width: 50px;
     position: absolute;
     overflow: hidden;
-    top: 7px;
-    right: 7px;
+    top: 9px;
+    right: 9px;
     border-radius: 10px;
   }
 
@@ -372,8 +375,8 @@ const StyledWrapper = styled.div`
   }
   #search-icon {
     position: absolute;
-    left: 20px;
-    top: 15px;
+    left: 25px;
+    top: 20px;
   }`;
 
 export default SearchInput;

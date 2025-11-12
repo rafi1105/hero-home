@@ -7,8 +7,8 @@
 }
 
 :root {
-  --primary-color: #667eea;
-  --secondary-color: #764ba2;
+  --primary-color: #4700B0;
+  --secondary-color: #3a0088;
   --text-dark: #212529;
   --text-light: #ffffff;
   --bg-light: #f8f9fa;
@@ -47,7 +47,7 @@ html.dark ::-webkit-scrollbar-track {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  background: var(--primary-color);
   border-radius: 5px;
 }
 

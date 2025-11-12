@@ -381,8 +381,8 @@ const HomeWrapper = styled.div`
     width: 100%;
     height: 100%;
     background: ${props => props.isDark 
-      ? 'linear-gradient(135deg, rgba(10, 10, 30, 0.8), rgba(26, 26, 46, 0.7))' 
-      : 'linear-gradient(135deg, rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.7))'};
+      ? 'rgba(26, 11, 46, 0.85)' 
+      : 'rgba(71, 0, 176, 0.85)'};
   }
 
   .hero-content {

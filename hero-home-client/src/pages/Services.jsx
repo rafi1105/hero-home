@@ -202,8 +202,8 @@ const ServicesWrapper = styled.div`
 
   .services-header {
     background: ${props => props.isDark 
-      ? 'linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%)' 
-      : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'};
+      ? '#1a0b2e' 
+      : '#4700B0'};
     color: white;
     padding: 4rem 0;
     text-align: center;

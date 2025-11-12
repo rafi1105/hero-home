@@ -93,8 +93,8 @@ const Header = () => {
 
 const HeaderWrapper = styled.header`
   background: ${props => props.isDark 
-    ? 'rgba(26, 26, 46, 0.7)' 
-    : 'rgba(102, 126, 234, 0.7)'};
+    ? 'rgba(71, 0, 176, 0.8)' 
+    : 'rgba(71, 0, 176, 0.8)'};
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid ${props => props.isDark 
@@ -107,41 +107,40 @@ const HeaderWrapper = styled.header`
   transition: all 0.3s ease;
 
   .navbar {
-    padding: 0.75rem 0;
+    padding: 1rem 0;
   }
 
   .container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 2.5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 3rem;
   }
 
   .logo {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.6rem;
     text-decoration: none;
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     font-weight: bold;
     color: white;
     transition: transform 0.3s ease;
+    flex-shrink: 0;
 
     &:hover {
       transform: scale(1.05);
     }
 
     .logo-icon {
-      font-size: 1.5rem;
+      font-size: 1.8rem;
     }
 
     .logo-text {
-      background: linear-gradient(45deg, #fff, #f0f0f0);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: #fff;
     }
   }
 
@@ -170,17 +169,19 @@ const HeaderWrapper = styled.header`
   .nav-links {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 1.5rem;
+    flex: 1;
+    justify-content: center;
 
     @media (max-width: 968px) {
       position: fixed;
-      top: 70px;
+      top: 80px;
       left: -100%;
       width: 100%;
-      height: calc(100vh - 70px);
+      height: calc(100vh - 80px);
       background: ${props => props.isDark 
-        ? 'rgba(26, 26, 46, 0.95)' 
-        : 'rgba(102, 126, 234, 0.95)'};
+        ? 'rgba(71, 0, 176, 0.95)' 
+        : 'rgba(71, 0, 176, 0.95)'};
       backdrop-filter: blur(10px);
       flex-direction: column;
       justify-content: flex-start;
@@ -198,11 +199,12 @@ const HeaderWrapper = styled.header`
     color: white;
     text-decoration: none;
     font-weight: 500;
-    padding: 0.4rem 0.8rem;
+    padding: 0.5rem 1rem;
     border-radius: 8px;
     transition: all 0.3s ease;
     position: relative;
-    font-size: 0.95rem;
+    font-size: 1rem;
+    white-space: nowrap;
 
     &:hover {
       background: rgba(255, 255, 255, 0.15);
@@ -218,7 +220,7 @@ const HeaderWrapper = styled.header`
         bottom: -2px;
         left: 50%;
         transform: translateX(-50%);
-        width: 25px;
+        width: 30px;
         height: 2px;
         background: white;
         border-radius: 2px;
@@ -234,7 +236,8 @@ const HeaderWrapper = styled.header`
   .auth-section {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 1rem;
+    flex-shrink: 0;
 
     @media (max-width: 968px) {
       flex-direction: column;
@@ -246,7 +249,7 @@ const HeaderWrapper = styled.header`
   .user-info {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 1rem;
     
     @media (max-width: 968px) {
       flex-direction: column;
@@ -255,19 +258,20 @@ const HeaderWrapper = styled.header`
     .user-name {
       color: white;
       font-weight: 500;
-      font-size: 0.85rem;
+      font-size: 0.95rem;
     }
   }
 
   .btn-login, .btn-register, .btn-logout {
-    padding: 0.4rem 1.2rem;
-    border-radius: 20px;
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     text-decoration: none;
     transition: all 0.3s ease;
     border: 2px solid rgba(255, 255, 255, 0.8);
     cursor: pointer;
+    white-space: nowrap;
 
     @media (max-width: 968px) {
       width: 100%;
@@ -282,13 +286,13 @@ const HeaderWrapper = styled.header`
 
     &:hover {
       background: white;
-      color: #667eea;
+      color: #4700B0;
     }
   }
 
   .btn-register {
     background: rgba(255, 255, 255, 0.9);
-    color: #667eea;
+    color: #4700B0;
     border-color: transparent;
 
     &:hover {

@@ -199,8 +199,8 @@ const RegisterWrapper = styled.div`
   align-items: center;
   padding: 2rem;
   background: ${props => props.isDark 
-    ? 'linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%)' 
-    : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'};
+    ? '#1a0b2e' 
+    : '#4700B0'};
 
   .register-container {
     width: 100%;
