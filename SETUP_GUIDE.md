@@ -135,14 +135,14 @@ You can use the seed script if available, or manually create through the UI.
 
 2. **Test Provider Stats:**
    ```
-   GET http://localhost:5000/api/users/{userId}/provider-stats
+   GET https://hero-home-server-five.vercel.app/users/{userId}/provider-stats
    Headers:
    Authorization: Bearer {your-token-here}
    ```
 
 3. **Test Search:**
    ```
-   GET http://localhost:5000/api/services?search=plumbing
+   GET https://hero-home-server-five.vercel.app/services?search=plumbing
    ```
 
 ## 🎉 Success Indicators

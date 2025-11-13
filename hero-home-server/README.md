@@ -1,193 +1,431 @@
-# Hero Home Server
+# 🏠 Hero Home Server
 
-Backend API for HomeHero - a platform connecting users with local service providers.
+Backend API for the Hero Home service booking platform - a marketplace connecting service providers with customers for home services like plumbing, electrical, cleaning, and more.
 
-## Technologies Used
+---
 
-- **Node.js** - Runtime environment
-- **Express.js** - Web framework
-- **MongoDB** - Database
-- **Mongoose** - ODM for MongoDB
+## 🚀 **Live Deployment**
 
-## Installation
-
-1. **Navigate to server directory**
-```bash
-cd hero-home-server
+**Production API:**
+```
+https://hero-home-server-five.vercel.app
 ```
 
-2. **Install dependencies**
+**API Base URL:**
+```
+https://hero-home-server-five.vercel.app/api
+```
+
+**Health Check:**
+```bash
+curl https://hero-home-server-five.vercel.app/
+```
+
+---
+
+## 🛠️ **Tech Stack**
+
+- **Runtime:** Node.js (ES Modules)
+- **Framework:** Express.js 4.x
+- **Database:** MongoDB (Mongoose ODM)
+- **Authentication:** Firebase Admin SDK
+- **Deployment:** Vercel Serverless Functions
+- **Language:** JavaScript (ES6+)
+
+---
+
+## 📋 **Prerequisites**
+
+Before installation, ensure you have:
+
+- **Node.js** >= 18.x ([Download](https://nodejs.org/))
+- **npm** >= 9.x (comes with Node.js)
+- **MongoDB** account ([MongoDB Atlas](https://www.mongodb.com/cloud/atlas))
+- **Firebase** project ([Firebase Console](https://console.firebase.google.com/))
+- **Vercel** account (for deployment) ([Vercel](https://vercel.com))
+
+---
+
+## 📦 **Installation**
+
+### 1️⃣ Clone the Repository
+
+```bash
+git clone https://github.com/rafi1105/hero-home.git
+cd hero-home/hero-home-server
+```
+
+### 2️⃣ Install Dependencies
+
 ```bash
 npm install
 ```
 
-3. **Setup environment variables**
-```bash
-# Copy the example env file
-copy .env.example .env
+**Required Dependencies:**
+- `express` - Web framework
+- `mongoose` - MongoDB ODM
+- `firebase-admin` - Firebase authentication
+- `cors` - Cross-origin resource sharing
+- `dotenv` - Environment variable management
 
-# Edit .env and update the following:
-# - MONGODB_URI: Your MongoDB connection string
-# - JWT_SECRET: A secure random string
-# - PORT: Server port (default: 5000)
+### 3️⃣ Environment Configuration
+
+Create a `.env` file in the root directory:
+
+```bash
+cp .env.example .env
 ```
 
-4. **Start MongoDB**
+Edit `.env` with your credentials:
 
-For local MongoDB:
-```bash
-# Make sure MongoDB is running on your machine
-# Default: mongodb://localhost:27017
+```env
+# Server Configuration
+NODE_ENV=development
+PORT=5000
+
+# MongoDB Connection
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/herohome?retryWrites=true&w=majority
+
+# Firebase Admin SDK (Option 1: Base64 - Recommended for Production)
+FIREBASE_SERVICE_KEY=<base64-encoded-service-account-json>
+
+# Firebase Admin SDK (Option 2: Individual Variables - Fallback)
+FIREBASE_PROJECT_ID=your-project-id
+FIREBASE_CLIENT_EMAIL=firebase-adminsdk-xxxxx@your-project-id.iam.gserviceaccount.com
+FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
+
+# Client URL (for CORS)
+CLIENT_URL=http://localhost:5173
 ```
 
-For MongoDB Atlas (cloud):
-- Create a free cluster at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
-- Get your connection string
-- Update `MONGODB_URI` in `.env`
+### 4️⃣ Firebase Service Account Setup
 
-5. **Run the server**
+**Generate Base64 Encoded Service Account:**
 
-Development mode (with nodemon):
+```bash
+node encode.js
+```
+
+Copy the output and paste it as the value for `FIREBASE_SERVICE_KEY` in your `.env` file.
+
+---
+
+## 🏃 **Running Locally**
+
+### Development Mode
+
 ```bash
 npm run dev
 ```
 
-Production mode:
+Server runs on: `http://localhost:5000`
+
+### Production Mode
+
 ```bash
 npm start
 ```
 
-## API Endpoints
+### Seed Database
 
-### Services
+Populate MongoDB with sample data:
 
-- `GET /api/services` - Get all services (with filters)
-  - Query params: `category`, `search`, `limit`, `page`
-- `GET /api/services/:id` - Get service by ID
-- `POST /api/services` - Create a new service
-- `PUT /api/services/:id` - Update a service
-- `DELETE /api/services/:id` - Delete a service
-- `GET /api/services/user/:userId` - Get services by provider
+```bash
+node seed.js
+```
 
-### Bookings
+---
 
-- `GET /api/bookings` - Get all bookings
-- `GET /api/bookings/:id` - Get booking by ID
-- `POST /api/bookings` - Create a new booking
-- `PUT /api/bookings/:id/status` - Update booking status
-- `PUT /api/bookings/:id/cancel` - Cancel a booking
-- `GET /api/bookings/user/:userId` - Get user bookings
-  - Query params: `status`
+## 🌐 **Deployment to Vercel**
 
-### Reviews
+### 1️⃣ Install Vercel CLI
 
-- `GET /api/reviews` - Get all reviews
-- `GET /api/reviews/:id` - Get review by ID
-- `POST /api/reviews` - Create a new review
-- `PUT /api/reviews/:id` - Update a review
-- `DELETE /api/reviews/:id` - Delete a review
-- `GET /api/reviews/service/:serviceId` - Get reviews for a service
+```bash
+npm install -g vercel
+```
 
-### Users
+### 2️⃣ Login to Vercel
 
-- `GET /api/users` - Get all users
-- `GET /api/users/:id` - Get user by ID
-- `POST /api/users` - Create a new user
-- `PUT /api/users/:id` - Update a user
-- `DELETE /api/users/:id` - Delete a user
+```bash
+vercel login
+```
 
-## Database Models
+### 3️⃣ Configure Environment Variables
 
-### Service
-- name, category, description, price
-- provider (userId, name, email, verified)
-- available, rating, bookingCount
+Go to your Vercel project dashboard or use CLI:
 
-### Booking
-- service, customer, provider
-- bookingDate, bookingTime, location
-- status (pending, confirmed, in-progress, completed, cancelled)
+```bash
+vercel env add MONGODB_URI
+vercel env add FIREBASE_SERVICE_KEY
+vercel env add NODE_ENV
+```
 
-### Review
-- service, customer (userId, name, email)
-- rating (1-5), comment
-- verifiedBooking
+**Required Environment Variables:**
+- `MONGODB_URI` - Your MongoDB connection string
+- `FIREBASE_SERVICE_KEY` - Base64 encoded service account JSON
+- `NODE_ENV` - Set to `production`
 
-### User
-- firebaseUid, email, displayName
-- role (customer, provider, admin)
-- profile info, preferences
+### 4️⃣ Deploy
 
-## Project Structure
+**Preview Deployment:**
+```bash
+vercel
+```
+
+**Production Deployment:**
+```bash
+vercel --prod
+```
+
+### 5️⃣ Access Your Deployment
+
+After deployment, Vercel provides:
+- **Production URL:** `https://your-project.vercel.app`
+- **Preview URLs:** For each git push
+- **Deployment Logs:** In Vercel dashboard
+
+---
+
+## 🔑 **API Documentation**
+
+### **Base URL**
+```
+Local: http://localhost:5000/api
+Production: https://hero-home-server-five.vercel.app/api
+```
+
+### **Public Endpoints**
+
+#### Health Check
+```bash
+GET /
+GET /api/health
+```
+
+#### Services
+```bash
+GET /api/services                    # Get all services
+GET /api/services/top-rated          # Get top-rated services
+GET /api/services/:id                # Get service by ID
+GET /api/services?category=plumbing  # Filter by category
+GET /api/services?minPrice=20&maxPrice=100  # Filter by price
+GET /api/services?search=repair      # Search services
+```
+
+#### Reviews
+```bash
+GET /api/reviews                     # Get all reviews
+GET /api/reviews/:id                 # Get review by ID
+GET /api/reviews/service/:serviceId  # Get reviews for a service
+```
+
+#### Users
+```bash
+POST /api/users                      # Create user (registration)
+```
+
+### **Protected Endpoints** (Require Firebase Authentication)
+
+Add header: `Authorization: Bearer <firebase-token>`
+
+#### Services
+```bash
+POST /api/services                   # Create service
+PUT /api/services/:id                # Update service
+DELETE /api/services/:id             # Delete service
+GET /api/services/user/:userId       # Get user's services
+POST /api/services/:id/review        # Add review to service
+```
+
+#### Bookings
+```bash
+GET /api/bookings                    # Get all bookings
+POST /api/bookings                   # Create booking
+GET /api/bookings/:id                # Get booking by ID
+GET /api/bookings/user/:userId       # Get user bookings
+GET /api/bookings/provider/:userId   # Get provider bookings
+PUT /api/bookings/:id/status         # Update booking status
+PUT /api/bookings/:id/cancel         # Cancel booking
+```
+
+#### Users
+```bash
+GET /api/users                       # Get all users
+GET /api/users/:id                   # Get user by ID
+PUT /api/users/:id                   # Update user
+DELETE /api/users/:id                # Delete user
+GET /api/users/:userId/provider-stats # Get provider statistics
+```
+
+**📖 Full API Documentation:** See [API_TESTING_GUIDE.md](./API_TESTING_GUIDE.md)
+
+---
+
+## 📁 **Project Structure**
 
 ```
 hero-home-server/
 ├── config/
-│   └── db.js              # MongoDB connection
+│   ├── db.js                 # MongoDB connection with serverless caching
+│   └── firebase.config.js    # Firebase Admin SDK initialization
 ├── controllers/
-│   ├── serviceController.js
-│   ├── bookingController.js
-│   ├── reviewController.js
-│   └── userController.js
+│   ├── bookingController.js  # Booking business logic
+│   ├── reviewController.js   # Review business logic
+│   ├── serviceController.js  # Service business logic
+│   └── userController.js     # User business logic
+├── middleware/
+│   └── authMiddleware.js     # Firebase token verification
 ├── models/
-│   ├── Service.js
-│   ├── Booking.js
-│   ├── Review.js
-│   └── User.js
+│   ├── Booking.js            # Booking schema
+│   ├── Review.js             # Review schema
+│   ├── Service.js            # Service schema
+│   └── User.js               # User schema
 ├── routes/
-│   ├── serviceRoutes.js
-│   ├── bookingRoutes.js
-│   ├── reviewRoutes.js
-│   └── userRoutes.js
-├── server.js              # Entry point
-├── .env.example
-└── package.json
+│   ├── bookingRoutes.js      # Booking endpoints
+│   ├── reviewRoutes.js       # Review endpoints
+│   ├── serviceRoutes.js      # Service endpoints
+│   └── userRoutes.js         # User endpoints
+├── .env                      # Environment variables (not in git)
+├── .env.example              # Environment template
+├── encode.js                 # Firebase service account encoder
+├── package.json              # Dependencies and scripts
+├── seed.js                   # Database seeder
+├── server.js                 # Express app entry point
+└── vercel.json               # Vercel deployment config
 ```
 
-## Environment Variables
+---
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| PORT | Server port | 5000 |
-| MONGODB_URI | MongoDB connection string | mongodb://localhost:27017/herohome |
-| JWT_SECRET | Secret key for JWT | - |
-| CORS_ORIGIN | Allowed CORS origin | http://localhost:5173 |
+## 🔒 **Security**
 
-## Error Handling
+- **Firebase Authentication:** All protected routes verify Firebase tokens
+- **CORS:** Configured to allow client requests
+- **Environment Variables:** Sensitive data stored securely
+- **Input Validation:** Mongoose schema validation
+- **Error Handling:** Comprehensive error middleware
 
-All endpoints return JSON responses:
+---
 
-Success:
-```json
-{
-  "data": {...}
-}
-```
+## 🧪 **Testing**
 
-Error:
-```json
-{
-  "message": "Error description"
-}
-```
+### Test Public Endpoints
 
-## Development
-
-Install nodemon globally for development:
 ```bash
-npm install -g nodemon
+# Health check
+curl https://hero-home-server-five.vercel.app/
+
+# Get services
+curl https://hero-home-server-five.vercel.app/api/services
+
+# Filter services
+curl "https://hero-home-server-five.vercel.app/api/services?category=plumbing"
 ```
 
-Then run:
+### Test Protected Endpoints
+
 ```bash
-npm run dev
+# Get bookings (requires auth token)
+curl https://hero-home-server-five.vercel.app/api/bookings \
+  -H "Authorization: Bearer YOUR_FIREBASE_TOKEN"
 ```
 
-The server will automatically restart when you make changes.
+**Complete Testing Guide:** See [API_TESTING_GUIDE.md](./API_TESTING_GUIDE.md)
 
-## Notes
+---
 
-- Make sure MongoDB is running before starting the server
-- Update `.env` file with your actual credentials
-- The server runs on `http://localhost:5000` by default
-- CORS is configured to allow requests from `http://localhost:5173` (Vite dev server)
+## 🐛 **Troubleshooting**
+
+### MongoDB Connection Issues
+
+**Error:** `Cannot call services.find() before initial connection is complete`
+
+**Solution:**
+- Ensure `MONGODB_URI` is correctly set in environment variables
+- Check MongoDB Atlas whitelist includes Vercel IPs or use `0.0.0.0/0`
+- Verify database user has proper permissions
+
+### Firebase Authentication Issues
+
+**Error:** `Firebase Admin SDK initialization failed`
+
+**Solution:**
+- Verify `FIREBASE_SERVICE_KEY` is base64 encoded
+- Check service account has correct permissions
+- Ensure Firebase project is active
+
+### Vercel Deployment Issues
+
+**Error:** `Route not found` or `404`
+
+**Solution:**
+- Verify `vercel.json` points to `server.js`
+- Check all environment variables are set in Vercel dashboard
+- Review deployment logs in Vercel dashboard
+
+### CORS Issues
+
+**Error:** `Access-Control-Allow-Origin` errors
+
+**Solution:**
+- Update `CLIENT_URL` in environment variables
+- Ensure CORS middleware is properly configured
+
+---
+
+## 📊 **Database Models**
+
+### Service
+- Name, category, description, price
+- Provider information
+- Rating and review count
+- Availability status
+
+### Booking
+- Service reference
+- Customer and provider details
+- Booking date, time, location
+- Status (pending, confirmed, completed, cancelled)
+
+### User
+- Firebase UID
+- Email, display name, photo URL
+- Role (customer, provider, both)
+- Address and contact information
+
+### Review
+- Service and user references
+- Rating (1-5 stars)
+- Comment and timestamp
+
+---
+
+## 🔗 **Related Links**
+
+- **Production API:** https://hero-home-server-five.vercel.app
+- **API Documentation:** [API_TESTING_GUIDE.md](./API_TESTING_GUIDE.md)
+- **Client Repository:** [hero-home-client](../hero-home-client)
+- **MongoDB Atlas:** https://cloud.mongodb.com
+- **Firebase Console:** https://console.firebase.google.com
+- **Vercel Dashboard:** https://vercel.com/dashboard
+
+---
+
+## 📝 **License**
+
+ISC
+
+---
+
+## 👥 **Author**
+
+**Rafi**
+- GitHub: [@rafi1105](https://github.com/rafi1105)
+
+---
+
+## 🙏 **Acknowledgments**
+
+- Express.js for the robust web framework
+- MongoDB for flexible data storage
+- Firebase for authentication services
+- Vercel for serverless deployment platform

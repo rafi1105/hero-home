@@ -13,7 +13,7 @@ dotenv.config();
 // Initialize Express app
 const app = express();
 
-// Connect to MongoDB
+// Initialize MongoDB connection immediately
 connectDB();
 
 // Middleware
@@ -34,6 +34,10 @@ app.use('/api/reviews', reviewRoutes);
 app.use('/api/users', userRoutes);
 
 // Health check route
+app.get('/', (req, res) => {
+  res.json({ status: 'OK', message: 'Hero Home API is running', version: '1.0.0' });
+});
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Server is running' });
 });
@@ -52,11 +56,14 @@ app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-// Start server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV}`);
-});
+// Start server (only in non-serverless environment)
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Environment: ${process.env.NODE_ENV}`);
+  });
+}
 
+// Export for Vercel serverless
 export default app;

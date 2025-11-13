@@ -11,7 +11,24 @@ const initializeFirebaseAdmin = () => {
   try {
     // Check if already initialized
     if (admin.apps.length === 0) {
-      // Option 1: Use service account JSON file (most reliable)
+      // Option 1: Use base64 encoded service account from environment variable
+      if (process.env.FIREBASE_SERVICE_KEY) {
+        try {
+          const decoded = Buffer.from(process.env.FIREBASE_SERVICE_KEY, "base64").toString("utf8");
+          const serviceAccount = JSON.parse(decoded);
+          
+          admin.initializeApp({
+            credential: admin.credential.cert(serviceAccount)
+          });
+          
+          console.log('✅ Firebase Admin SDK initialized with base64 encoded service account');
+          return;
+        } catch (decodeError) {
+          console.warn('⚠️ Could not decode FIREBASE_SERVICE_KEY, trying file...');
+        }
+      }
+      
+      // Option 2: Use service account JSON file (most reliable)
       try {
         const serviceAccountPath = join(__dirname, '..', 'herohome-e9276-firebase-adminsdk-fbsvc-a4fa428247.json');
         const serviceAccount = JSON.parse(readFileSync(serviceAccountPath, 'utf8'));
@@ -26,7 +43,7 @@ const initializeFirebaseAdmin = () => {
         console.warn('⚠️ Could not load service account file, trying environment variables...');
       }
       
-      // Option 2: Use environment variables
+      // Option 3: Use environment variables
       if (process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_CLIENT_EMAIL && process.env.FIREBASE_PRIVATE_KEY) {
         admin.initializeApp({
           credential: admin.credential.cert({

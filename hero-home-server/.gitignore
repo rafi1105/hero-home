@@ -6,3 +6,4 @@ node_modules
 # Firebase service account keys (keep these secure!)
 *firebase*.json
 serviceAccountKey.json
+.vercel
