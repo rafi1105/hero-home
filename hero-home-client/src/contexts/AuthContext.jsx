@@ -24,14 +24,20 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Sign up with email and password
   const signup = async (email, password, displayName) => {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    if (displayName) {
-      await updateProfile(userCredential.user, { displayName });
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      if (displayName) {
+        await updateProfile(userCredential.user, { displayName });
+      }
+      return userCredential;
+    } catch (error) {
+      console.error('Signup error:', error);
+      throw error;
     }
-    return userCredential;
   };
 
   // Sign in with email and password
@@ -46,8 +52,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Sign out
-  const logout = () => {
-    return signOut(auth);
+  const logout = async () => {
+    try {
+      localStorage.removeItem('token');
+      await signOut(auth);
+    } catch (error) {
+      console.error('Logout error:', error);
+      throw error;
+    }
   };
 
   // Reset password
@@ -61,38 +73,62 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    let tokenRefreshInterval;
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setCurrentUser(user);
-      
-      // Get and store Firebase ID token
-      if (user) {
-        try {
-          const token = await user.getIdToken();
-          localStorage.setItem('token', token);
-          
-          // Refresh token every 55 minutes (tokens expire after 1 hour)
-          const refreshInterval = setInterval(async () => {
-            try {
-              const freshToken = await user.getIdToken(true);
-              localStorage.setItem('token', freshToken);
-            } catch (error) {
-              console.error('Error refreshing token:', error);
-            }
-          }, 55 * 60 * 1000); // 55 minutes
-          
-          // Cleanup interval on component unmount
-          return () => clearInterval(refreshInterval);
-        } catch (error) {
-          console.error('Error getting token:', error);
+      try {
+        setCurrentUser(user);
+        
+        // Clear any existing interval
+        if (tokenRefreshInterval) {
+          clearInterval(tokenRefreshInterval);
         }
-      } else {
-        localStorage.removeItem('token');
+        
+        // Get and store Firebase ID token
+        if (user) {
+          try {
+            const token = await user.getIdToken();
+            localStorage.setItem('token', token);
+            
+            // Refresh token every 55 minutes (tokens expire after 1 hour)
+            tokenRefreshInterval = setInterval(async () => {
+              try {
+                const freshToken = await user.getIdToken(true);
+                localStorage.setItem('token', freshToken);
+              } catch (error) {
+                console.error('Error refreshing token:', error);
+                // Clear interval if refresh fails
+                clearInterval(tokenRefreshInterval);
+              }
+            }, 55 * 60 * 1000); // 55 minutes
+          } catch (error) {
+            console.error('Error getting token:', error);
+            localStorage.removeItem('token');
+          }
+        } else {
+          localStorage.removeItem('token');
+        }
+        
+        setError(null);
+      } catch (error) {
+        console.error('Auth state change error:', error);
+        setError(error);
+      } finally {
+        setLoading(false);
       }
-      
+    }, (error) => {
+      // Error callback for onAuthStateChanged
+      console.error('Auth state observer error:', error);
+      setError(error);
       setLoading(false);
     });
 
-    return unsubscribe;
+    return () => {
+      unsubscribe();
+      if (tokenRefreshInterval) {
+        clearInterval(tokenRefreshInterval);
+      }
+    };
   }, []);
 
   const value = {
@@ -103,12 +139,13 @@ export const AuthProvider = ({ children }) => {
     signInWithGoogle,
     resetPassword,
     updateUserProfile,
-    loading
+    loading,
+    error
   };
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 };

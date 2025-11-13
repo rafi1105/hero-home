@@ -1,10 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Suspense } from 'react';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ErrorBoundary from './components/ErrorBoundary';
 import Layout from './components/Layout';
 import PrivateRoute from './components/PrivateRoute';
+import Loader from './components/ui/Loader';
 import Home from './pages/Home';
 import Services from './pages/Services';
 import ServiceDetails from './pages/ServiceDetails';
@@ -18,70 +21,74 @@ import NotFound from './pages/NotFound';
 
 function App() {
   return (
-    <Router>
-      <ThemeProvider>
-        <AuthProvider>
-          <Routes>
-            <Route path="/" element={<Layout />}>
-              <Route index element={<Home />} />
-              <Route path="services" element={<Services />} />
-              <Route path="services/:id" element={<ServiceDetails />} />
-              <Route path="login" element={<Login />} />
-              <Route path="register" element={<Register />} />
-              
-              {/* Private Routes */}
-              <Route
-                path="profile"
-                element={
-                  <PrivateRoute>
-                    <Profile />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="my-services"
-                element={
-                  <PrivateRoute>
-                    <MyServices />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="add-service"
-                element={
-                  <PrivateRoute>
-                    <AddService />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="my-bookings"
-                element={
-                  <PrivateRoute>
-                    <MyBookings />
-                  </PrivateRoute>
-                }
-              />
+    <ErrorBoundary>
+      <Router>
+        <ThemeProvider>
+          <AuthProvider>
+            <Suspense fallback={<Loader />}>
+              <Routes>
+                <Route path="/" element={<Layout />}>
+                  <Route index element={<Home />} />
+                  <Route path="services" element={<Services />} />
+                  <Route path="services/:id" element={<ServiceDetails />} />
+                  <Route path="login" element={<Login />} />
+                  <Route path="register" element={<Register />} />
+                  
+                  {/* Private Routes */}
+                  <Route
+                    path="profile"
+                    element={
+                      <PrivateRoute>
+                        <Profile />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="my-services"
+                    element={
+                      <PrivateRoute>
+                        <MyServices />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="add-service"
+                    element={
+                      <PrivateRoute>
+                        <AddService />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="my-bookings"
+                    element={
+                      <PrivateRoute>
+                        <MyBookings />
+                      </PrivateRoute>
+                    }
+                  />
 
-              {/* 404 Page */}
-              <Route path="*" element={<NotFound />} />
-            </Route>
-          </Routes>
-          <ToastContainer
-            position="top-right"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="colored"
-          />
-        </AuthProvider>
-      </ThemeProvider>
-    </Router>
+                  {/* 404 Page */}
+                  <Route path="*" element={<NotFound />} />
+                </Route>
+              </Routes>
+            </Suspense>
+            <ToastContainer
+              position="top-right"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="colored"
+            />
+          </AuthProvider>
+        </ThemeProvider>
+      </Router>
+    </ErrorBoundary>
   );
 }
 
