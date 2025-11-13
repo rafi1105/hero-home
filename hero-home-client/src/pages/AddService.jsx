@@ -43,7 +43,7 @@ const AddService = () => {
     try {
       const serviceData = {
         name: formData.name,
-        category: formData.category,
+        category: formData.category.toLowerCase(), // Ensure lowercase for enum validation
         description: formData.description,
         price: parseFloat(formData.price),
         image: formData.image || 'https://via.placeholder.com/400x300',
@@ -56,11 +56,13 @@ const AddService = () => {
         }
       };
 
+      console.log('Sending service data:', serviceData);
       await servicesAPI.create(serviceData);
       toast.success('Service added successfully!');
       navigate('/my-services');
     } catch (error) {
       console.error('Error adding service:', error);
+      console.error('Error response:', error.response?.data);
       toast.error(error.response?.data?.message || 'Failed to add service');
     } finally {
       setLoading(false);
@@ -158,9 +160,11 @@ const AddService = () => {
               />
             </div>
 
-            <button type="submit" className="Btn" disabled={loading}>
-              <span className="btn-text">{loading ? 'Adding Service...' : 'Add Service'}</span>
-            </button>
+            <div className="button-container">
+              <button type="submit" className="submit-button" disabled={loading}>
+                {loading ? 'Adding Service...' : 'Add Service'}
+              </button>
+            </div>
           </form>
         </motion.div>
       </div>
@@ -195,10 +199,11 @@ const AddServiceWrapper = styled.div`
       font-size: 2.5rem;
       text-align: center;
       margin-bottom: 0.5rem;
-      background: linear-gradient(135deg, #4700B0, #764ba2);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: ${props => props.$isDark ? '#fff' : 'transparent'};
+      background: ${props => props.$isDark ? 'none' : 'linear-gradient(135deg, #4700B0, #764ba2)'};
+      -webkit-background-clip: ${props => props.$isDark ? 'unset' : 'text'};
+      -webkit-text-fill-color: ${props => props.$isDark ? '#fff' : 'transparent'};
+      background-clip: ${props => props.$isDark ? 'unset' : 'text'};
       font-weight: 700;
 
       @media (max-width: 768px) {
@@ -290,76 +295,58 @@ const AddServiceWrapper = styled.div`
     border: 2px solid ${props => props.$isDark ? '#2d2d44' : '#e0e0e0'};
   }
 
-  .Btn {
-    width: 100%;
-    height: 56px;
-    border: none;
-    border-radius: 12px;
-    background: linear-gradient(to right, #77530a, #ffd277, #77530a, #77530a, #ffd277, #77530a);
-    background-size: 250%;
-    background-position: left;
-    color: #ffd277;
+  .button-container {
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    padding: 3px;
+    background: ${props => props.$isDark 
+      ? 'linear-gradient(90deg, #4700B0, #764ba2)' 
+      : 'linear-gradient(90deg, #03a9f4, #f441a5)'};
+    border-radius: 0.9em;
+    transition: all 0.4s ease;
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      border-radius: 0.9em;
+      z-index: -10;
+      filter: blur(0);
+      transition: filter 0.4s ease;
+    }
+
+    &:hover::before {
+      background: ${props => props.$isDark 
+        ? 'linear-gradient(90deg, #4700B0, #764ba2)' 
+        : 'linear-gradient(90deg, #03a9f4, #f441a5)'};
+      filter: blur(1.2em);
+    }
+
+    &:active::before {
+      filter: blur(0.2em);
+    }
+  }
+
+  .submit-button {
+    width: 100%;
+    font-size: 1.4em;
+    padding: 0.6em 0.8em;
+    border-radius: 0.5em;
+    border: none;
+    background-color: ${props => props.$isDark ? '#1a1a2e' : '#000'};
+    color: #fff;
     cursor: pointer;
-    transition-duration: 1s;
-    overflow: hidden;
-    font-size: 1.1rem;
-    font-weight: 700;
-    letter-spacing: 1px;
+    box-shadow: 2px 2px 3px #000000b4;
+    font-weight: 600;
+    transition: all 0.3s ease;
 
     &:disabled {
       opacity: 0.6;
       cursor: not-allowed;
-      
-      &:hover {
-        background-position: left;
-        transform: none;
-      }
-
-      &::before {
-        background-position: left;
-      }
-    }
-
-    .btn-text {
-      position: relative;
-      z-index: 2;
-      color: #ffd277;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition-duration: 1s;
-    }
-
-    &::before {
-      position: absolute;
-      content: "";
-      color: #ffd277;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 97%;
-      height: 90%;
-      border-radius: 10px;
-      transition-duration: 1s;
-      background-color: rgba(0, 0, 0, 0.842);
-      background-size: 200%;
-      z-index: 1;
     }
 
     &:hover:not(:disabled) {
-      background-position: right;
-      transition-duration: 1s;
-      transform: translateY(-3px);
-      box-shadow: 0 10px 30px rgba(255, 210, 119, 0.3);
-    }
-
-    &:hover:not(:disabled)::before {
-      background-position: right;
-      transition-duration: 1s;
+      transform: translateY(-2px);
     }
 
     &:active:not(:disabled) {

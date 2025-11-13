@@ -22,7 +22,7 @@ const Services = () => {
 
   useEffect(() => {
     fetchServices();
-  }, [selectedCategory]);
+  }, [selectedCategory, priceRange.min, priceRange.max]);
 
   const fetchServices = async () => {
     setLoading(true);
@@ -34,7 +34,8 @@ const Services = () => {
         maxPrice: priceRange.max || undefined
       };
       const response = await servicesAPI.getAll(params);
-      setServices(response.data.services);
+      // Handle both response formats (services array or data.services)
+      setServices(response.data.services || response.data);
     } catch (error) {
       console.error('Error fetching services:', error);
       toast.error('Failed to load services');
@@ -44,7 +45,7 @@ const Services = () => {
   };
 
   const handlePriceFilter = () => {
-    fetchServices();
+    // Removed - now filtering happens automatically via useEffect
   };
 
   const clearPriceFilter = () => {
@@ -105,9 +106,8 @@ const Services = () => {
               onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })}
               min="0"
             />
-            <button className="filter-btn" onClick={handlePriceFilter}>Apply</button>
             {(priceRange.min || priceRange.max) && (
-              <button className="clear-btn" onClick={clearPriceFilter}>Clear</button>
+              <button className="clear-btn" onClick={clearPriceFilter}>Clear Filter</button>
             )}
           </div>
 
@@ -429,7 +429,7 @@ const ServicesWrapper = styled.div`
 
       .provider-name {
         font-size: 0.9rem;
-        color: #4700B0;
+        color: ${props => props.$isDark ? '#fff' : '#4700B0'};
         margin-bottom: 0.8rem;
         font-weight: 600;
       }
@@ -461,7 +461,7 @@ const ServicesWrapper = styled.div`
         .service-price {
           font-size: 1.3rem;
           font-weight: 700;
-          color: #4700B0;
+          color: ${props => props.$isDark ? '#fff' : '#4700B0'};
         }
       }
 

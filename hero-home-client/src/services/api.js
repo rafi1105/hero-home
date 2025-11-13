@@ -44,6 +44,7 @@ export const bookingsAPI = {
   updateStatus: (id, status) => api.put(`/bookings/${id}/status`, { status }),
   cancel: (id, reason, cancelledBy) => api.put(`/bookings/${id}/cancel`, { reason, cancelledBy }),
   getUserBookings: (userId, params) => api.get(`/bookings/user/${userId}`, { params }),
+  getProviderBookings: (userId, params) => api.get(`/bookings/provider/${userId}`, { params }),
 };
 
 // Reviews API

@@ -131,7 +131,7 @@ const Login = () => {
             </div>
 
             <button type="submit" className="btn-login" disabled={loading}>
-              {loading ? 'Logging in...' : 'Login'}
+              <span>{loading ? 'Logging in...' : 'Login'}</span>
             </button>
           </form>
 
@@ -269,20 +269,52 @@ const LoginWrapper = styled.div`
   }
 
   .btn-login {
+    position: relative;
     width: 100%;
-    padding: 1rem;
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    padding: 14px 25px;
+    background: linear-gradient(45deg, #0ce39a, #69007f, #fc0987);
     color: white;
     border: none;
     border-radius: 10px;
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.5s ease;
+   
+    span {
+      position: relative;
+      z-index: 1;
+    }
 
-    &:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      background: ${props => props.$isDark ? '#1a1a2e' : '#3C0393'};
+      border-radius: 9px;
+      transition: 0.5s;
+      color:white;
+    }
+
+    &:hover:not(:disabled)::before {
+      opacity: 0.7;
+      color:white;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0px;
+      background: linear-gradient(45deg, #0ce39a, #69007f, #fc0987);
+      border-radius: 9px;
+      color:white;
+      transition: 0.5s;
+      opacity: 0;
+      filter: blur(20px);
+    }
+
+    &:hover:not(:disabled)::after {
+      opacity: 1;
     }
 
     &:disabled {
@@ -323,11 +355,12 @@ const LoginWrapper = styled.div`
   }
 
   .btn-google {
+    position: relative;
     width: 100%;
-    padding: 1rem;
-    background: ${props => props.$isDark ? '#0f0f1e' : 'white'};
-    color: ${props => props.$isDark ? '#fff' : '#212529'};
-    border: 2px solid ${props => props.$isDark ? '#2d2d44' : '#e0e0e0'};
+    padding: 14px 25px;
+    background: linear-gradient(45deg, #667eea, #764ba2, #ea4335);
+    color: #fff;
+    border: none;
     border-radius: 10px;
     font-size: 1rem;
     font-weight: 600;
@@ -336,16 +369,46 @@ const LoginWrapper = styled.div`
     align-items: center;
     justify-content: center;
     gap: 0.75rem;
-    transition: all 0.3s ease;
+    transition: all 0.5s ease;
 
-    svg {
-      font-size: 1.3rem;
-      color: #ea4335;
+    span {
+      position: relative;
+      z-index: 1;
     }
 
-    &:hover:not(:disabled) {
-      border-color: #667eea;
-      background: ${props => props.$isDark ? '#1a1a2e' : '#f8f9fa'};
+    svg {
+      position: relative;
+      z-index: 1;
+      font-size: 1.3rem;
+      color: #fff;
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      background: ${props => props.$isDark ? '#1a1a2e' : '#4700B0'};
+      border-radius: 9px;
+      transition: 0.5s;
+    }
+
+    &:hover:not(:disabled)::before {
+      opacity: 0.7;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0px;
+      background: linear-gradient(45deg, #667eea, #764ba2, #ea4335);
+      border-radius: 9px;
+      transition: 0.5s;
+      opacity: 0;
+      filter: blur(20px);
+    }
+
+    &:hover:not(:disabled)::after {
+      opacity: 1;
     }
 
     &:disabled {

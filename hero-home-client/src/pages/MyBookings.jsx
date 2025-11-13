@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaCalendar, FaClock, FaMapMarkerAlt, FaStar, FaTimes } from 'react-icons/fa';
+import { FaCalendar, FaClock, FaMapMarkerAlt, FaStar, FaTrash, FaTimes } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import Loader from '../components/ui/Loader';
 import { bookingsAPI, servicesAPI } from '../services/api';
@@ -13,7 +13,6 @@ const MyBookings = () => {
   const { isDarkMode } = useTheme();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all'); // all, pending, confirmed, completed, cancelled
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [reviewData, setReviewData] = useState({
@@ -25,12 +24,11 @@ const MyBookings = () => {
     if (currentUser) {
       fetchBookings();
     }
-  }, [currentUser, filter]);
+  }, [currentUser]);
 
   const fetchBookings = async () => {
     try {
-      const params = filter !== 'all' ? { status: filter } : {};
-      const response = await bookingsAPI.getUserBookings(currentUser.uid, params);
+      const response = await bookingsAPI.getUserBookings(currentUser.uid);
       setBookings(response.data);
     } catch (error) {
       console.error('Error fetching bookings:', error);
@@ -40,16 +38,18 @@ const MyBookings = () => {
     }
   };
 
-  const handleCancelBooking = async (id) => {
-    if (window.confirm('Are you sure you want to cancel this booking?')) {
-      try {
-        await bookingsAPI.cancel(id, 'Cancelled by customer', currentUser.uid);
-        toast.success('Booking cancelled successfully');
-        fetchBookings(); // Refresh the list
-      } catch (error) {
-        console.error('Error cancelling booking:', error);
-        toast.error('Failed to cancel booking');
-      }
+  const handleCancelBooking = async (bookingId) => {
+    if (!window.confirm('Are you sure you want to cancel this booking?')) {
+      return;
+    }
+
+    try {
+      await bookingsAPI.cancel(bookingId, 'Cancelled by customer', currentUser.email);
+      toast.success('Booking cancelled successfully');
+      fetchBookings();
+    } catch (error) {
+      console.error('Error cancelling booking:', error);
+      toast.error(error.response?.data?.message || 'Failed to cancel booking');
     }
   };
 
@@ -85,133 +85,148 @@ const MyBookings = () => {
     }
   };
 
-  const hasReviewed = (booking) => {
-    // Check if user has already reviewed this booking
-    return booking.reviewed || false;
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    });
   };
 
-  const filteredBookings = filter === 'all' 
-    ? bookings 
-    : bookings.filter(b => b.status === filter);
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'upcoming':
-        return '#4700B0';
-      case 'completed':
-        return '#2ed573';
-      case 'cancelled':
-        return '#ff4757';
-      default:
-        return '#aaa';
-    }
+  const formatTime = (timeString) => {
+    if (!timeString) return 'N/A';
+    return timeString;
   };
+
+  if (loading) return <Loader />;
 
   return (
     <MyBookingsWrapper $isDark={isDarkMode}>
       <div className="container">
-        <div className="header">
+        <motion.div
+          className="header-section"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           <h1>My Bookings</h1>
-          <div className="filters">
-            <button
-              className={filter === 'all' ? 'active' : ''}
-              onClick={() => setFilter('all')}
-            >
-              All
-            </button>
-            <button
-              className={filter === 'upcoming' ? 'active' : ''}
-              onClick={() => setFilter('upcoming')}
-            >
-              Upcoming
-            </button>
-            <button
-              className={filter === 'completed' ? 'active' : ''}
-              onClick={() => setFilter('completed')}
-            >
-              Completed
-            </button>
-            <button
-              className={filter === 'cancelled' ? 'active' : ''}
-              onClick={() => setFilter('cancelled')}
-            >
-              Cancelled
-            </button>
-          </div>
-        </div>
+          <p className="subtitle">Manage all your service bookings</p>
+        </motion.div>
 
-        {loading ? (
-          <Loader />
-        ) : filteredBookings.length === 0 ? (
-          <div className="empty-state">
-            <h2>No bookings found</h2>
-            <p>You haven't made any bookings yet</p>
-          </div>
+        {bookings.length === 0 ? (
+          <motion.div
+            className="empty-state"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="empty-icon">📅</div>
+            <h2>No Bookings Yet</h2>
+            <p>You haven't booked any services yet. Start exploring our services!</p>
+            <a href="/services" className="btn-explore">Explore Services</a>
+          </motion.div>
         ) : (
-          <div className="bookings-list">
-            {filteredBookings.map((booking, index) => (
-              <motion.div
-                key={booking._id}
-                className="booking-card"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <div className="booking-image">
-                  <img src={booking.service.image} alt={booking.service.name} />
-                </div>
-                <div className="booking-content">
-                  <div className="booking-header">
-                    <div>
-                      <h3>{booking.service.name}</h3>
-                      <p className="provider">by {booking.service.provider}</p>
-                    </div>
-                    <div 
-                      className="status-badge" 
-                      style={{ background: getStatusColor(booking.status) }}
-                    >
-                      {booking.status}
-                    </div>
-                  </div>
-                  <div className="booking-details">
-                    <div className="detail-item">
-                      <FaCalendar />
-                      <span>{booking.date}</span>
-                    </div>
-                    <div className="detail-item">
-                      <FaClock />
-                      <span>{booking.time}</span>
-                    </div>
-                    <div className="detail-item">
-                      <FaMapMarkerAlt />
-                      <span>{booking.location}</span>
-                    </div>
-                  </div>
-                  <div className="booking-footer">
-                    <div className="price">${booking.price}</div>
-                    <div className="action-buttons">
-                      {booking.status === 'completed' && !hasReviewed(booking) && (
-                        <button 
-                          className="btn-review"
-                          onClick={() => handleOpenReviewModal(booking)}
-                        >
-                          <FaStar /> Leave Review
-                        </button>
-                      )}
-                      {booking.status === 'upcoming' && (
-                        <button 
-                          className="btn-cancel"
-                          onClick={() => handleCancelBooking(booking._id)}
-                        >
-                          Cancel Booking
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          <motion.div
+            className="table-container"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <table className="bookings-table">
+              <thead>
+                <tr>
+                  <th>Service</th>
+                  <th>Provider</th>
+                  <th>Date & Time</th>
+                  <th>Location</th>
+                  <th>Price</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {bookings.map((booking, index) => (
+                  <motion.tr
+                    key={booking._id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                  >
+                    <td>
+                      <div className="service-cell">
+                        <div className="service-image">
+                          <img src={booking.service?.image} alt={booking.service?.name} />
+                        </div>
+                        <div className="service-details">
+                          <span className="service-name">{booking.service?.name}</span>
+                          <span className="service-category">{booking.service?.category}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div className="provider-cell">
+                        <span className="provider-name">{booking.provider?.name}</span>
+                        <span className="provider-email">{booking.provider?.email}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div className="datetime-cell">
+                        <div className="date-info">
+                          <FaCalendar className="icon" />
+                          <span>{formatDate(booking.bookingDate)}</span>
+                        </div>
+                        <div className="time-info">
+                          <FaClock className="icon" />
+                          <span>{formatTime(booking.bookingTime)}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div className="location-cell">
+                        <FaMapMarkerAlt className="icon" />
+                        <span>{booking.location?.address}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div className="price-cell">
+                        <span className="price-amount">${booking.price}</span>
+                        <span className="price-unit">/hour</span>
+                      </div>
+                    </td>
+                    <td>
+                      <span className={`status-badge status-${booking.status}`}>
+                        {booking.status}
+                      </span>
+                    </td>
+                    <td>
+                      <div className="actions-cell">
+                        {booking.status !== 'cancelled' && booking.status !== 'completed' && (
+                          <button
+                            className="btn-cancel"
+                            onClick={() => handleCancelBooking(booking._id)}
+                            title="Cancel Booking"
+                          >
+                            <FaTrash /> Cancel
+                          </button>
+                        )}
+                        {booking.status === 'completed' && !booking.reviewed && (
+                          <button
+                            className="btn-review"
+                            onClick={() => handleOpenReviewModal(booking)}
+                            title="Leave Review"
+                          >
+                            <FaStar /> Review
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </motion.tr>
+                ))}
+              </tbody>
+            </table>
+          </motion.div>
         )}
       </div>
 
@@ -281,93 +296,161 @@ const MyBookingsWrapper = styled.div`
   background: ${props => props.$isDark ? '#0f0f1e' : '#f8f9fa'};
 
   .container {
-    max-width: 1000px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 0 2rem;
   }
 
-  .header {
+  .header-section {
     margin-bottom: 3rem;
+    text-align: center;
 
     h1 {
-      font-size: 2.5rem;
-      color: ${props => props.$isDark ? '#fff' : '#212529'};
-      margin-bottom: 1.5rem;
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+      color: ${props => props.$isDark ? '#fff' : 'transparent'};
+      background: ${props => props.$isDark ? 'none' : 'linear-gradient(135deg, #4700B0, #764ba2)'};
+      -webkit-background-clip: ${props => props.$isDark ? 'unset' : 'text'};
+      -webkit-text-fill-color: ${props => props.$isDark ? '#fff' : 'transparent'};
+      background-clip: ${props => props.$isDark ? 'unset' : 'text'};
+      font-weight: 700;
 
       @media (max-width: 768px) {
         font-size: 2rem;
       }
     }
 
-    .filters {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-
-      button {
-        padding: 0.7rem 1.5rem;
-        background: ${props => props.$isDark ? '#1a1a2e' : 'white'};
-        color: ${props => props.$isDark ? '#fff' : '#212529'};
-        border: 2px solid ${props => props.$isDark ? '#2d2d44' : '#e0e0e0'};
-        border-radius: 25px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-
-        &:hover {
-          border-color: #4700B0;
-        }
-
-        &.active {
-          background: linear-gradient(135deg, #4700B0, #764ba2);
-          color: white;
-          border-color: transparent;
-        }
-      }
+    .subtitle {
+      font-size: 1.2rem;
+      color: ${props => props.$isDark ? '#aaa' : '#6c757d'};
     }
   }
 
   .empty-state {
     text-align: center;
-    padding: 4rem 2rem;
+    padding: 5rem 2rem;
+    background: ${props => props.$isDark ? '#1a1a2e' : 'white'};
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+
+    .empty-icon {
+      font-size: 5rem;
+      margin-bottom: 1.5rem;
+    }
 
     h2 {
       font-size: 2rem;
-      color: ${props => props.$isDark ? '#fff' : '#212529'};
       margin-bottom: 1rem;
+      color: ${props => props.$isDark ? '#fff' : '#212529'};
     }
 
     p {
+      font-size: 1.2rem;
       color: ${props => props.$isDark ? '#aaa' : '#6c757d'};
-      font-size: 1.1rem;
-    }
-  }
-
-  .bookings-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  .booking-card {
-    background: ${props => props.$isDark ? '#1a1a2e' : 'white'};
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    display: flex;
-
-    @media (max-width: 768px) {
-      flex-direction: column;
+      margin-bottom: 2rem;
     }
 
-    .booking-image {
-      width: 250px;
-      flex-shrink: 0;
+    .btn-explore {
+      display: inline-block;
+      padding: 1rem 2rem;
+      background: ${props => props.$isDark 
+        ? 'linear-gradient(90deg, #4700B0, #764ba2)' 
+        : 'linear-gradient(90deg, #4700B0, #764ba2)'};
+      color: white;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: all 0.3s ease;
 
-      @media (max-width: 768px) {
-        width: 100%;
-        height: 200px;
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(71, 0, 176, 0.4);
       }
+    }
+  }
+
+  .table-container {
+    background: ${props => props.$isDark ? '#1a1a2e' : 'white'};
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+  }
+
+  .bookings-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 1rem;
+
+    thead {
+      tr {
+        th {
+          padding: 1rem;
+          text-align: left;
+          font-size: 0.9rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          color: ${props => props.$isDark ? '#aaa' : '#6c757d'};
+          border-bottom: 2px solid ${props => props.$isDark ? '#2d2d44' : '#e9ecef'};
+
+          &:first-child {
+            padding-left: 1.5rem;
+          }
+
+          &:last-child {
+            text-align: center;
+          }
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        background: ${props => props.$isDark ? '#0f0f1e' : '#f8f9fa'};
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: ${props => props.$isDark ? '#2d2d44' : '#e9ecef'};
+          transform: scale(1.01);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        td {
+          padding: 1.5rem 1rem;
+          vertical-align: middle;
+          border-top: 1px solid ${props => props.$isDark ? '#2d2d44' : '#dee2e6'};
+          border-bottom: 1px solid ${props => props.$isDark ? '#2d2d44' : '#dee2e6'};
+
+          &:first-child {
+            border-left: 1px solid ${props => props.$isDark ? '#2d2d44' : '#dee2e6'};
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+            padding-left: 1.5rem;
+          }
+
+          &:last-child {
+            border-right: 1px solid ${props => props.$isDark ? '#2d2d44' : '#dee2e6'};
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+            text-align: center;
+          }
+        }
+      }
+    }
+  }
+
+  .service-cell {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .service-image {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      overflow: hidden;
+      flex-shrink: 0;
 
       img {
         width: 100%;
@@ -376,117 +459,208 @@ const MyBookingsWrapper = styled.div`
       }
     }
 
-    .booking-content {
-      flex: 1;
-      padding: 1.5rem;
+    .service-details {
       display: flex;
       flex-direction: column;
+      gap: 0.3rem;
 
-      .booking-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 1rem;
-        gap: 1rem;
-
-        h3 {
-          font-size: 1.4rem;
-          color: ${props => props.$isDark ? '#fff' : '#212529'};
-          margin-bottom: 0.3rem;
-        }
-
-        .provider {
-          color: #4700B0;
-          font-weight: 600;
-        }
-
-        .status-badge {
-          padding: 0.5rem 1rem;
-          border-radius: 20px;
-          color: white;
-          font-weight: 600;
-          font-size: 0.9rem;
-          text-transform: capitalize;
-          white-space: nowrap;
-        }
+      .service-name {
+        font-weight: 600;
+        font-size: 1rem;
+        color: ${props => props.$isDark ? '#fff' : '#212529'};
       }
 
-      .booking-details {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-        margin-bottom: 1rem;
+      .service-category {
+        font-size: 0.85rem;
+        color: ${props => props.$isDark ? '#aaa' : '#6c757d'};
+        text-transform: capitalize;
+      }
+    }
+  }
 
-        .detail-item {
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-          color: ${props => props.$isDark ? '#aaa' : '#6c757d'};
+  .provider-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
 
-          svg {
-            font-size: 1.1rem;
-            color: #4700B0;
-          }
-        }
+    .provider-name {
+      font-weight: 600;
+      color: ${props => props.$isDark ? '#fff' : '#212529'};
+    }
+
+    .provider-email {
+      font-size: 0.85rem;
+      color: ${props => props.$isDark ? '#aaa' : '#6c757d'};
+    }
+  }
+
+  .datetime-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    .date-info,
+    .time-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      color: ${props => props.$isDark ? '#fff' : '#212529'};
+
+      .icon {
+        color: #4700B0;
+        font-size: 0.85rem;
+      }
+    }
+  }
+
+  .location-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: ${props => props.$isDark ? '#fff' : '#212529'};
+    font-size: 0.9rem;
+
+    .icon {
+      color: #4700B0;
+      flex-shrink: 0;
+    }
+
+    span {
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .price-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    .price-amount {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #4700B0;
+    }
+
+    .price-unit {
+      font-size: 0.85rem;
+      color: ${props => props.$isDark ? '#aaa' : '#6c757d'};
+    }
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: capitalize;
+
+    &.status-pending {
+      background: ${props => props.$isDark ? '#3d2f00' : '#fff3cd'};
+      color: ${props => props.$isDark ? '#ffc107' : '#856404'};
+    }
+
+    &.status-confirmed {
+      background: ${props => props.$isDark ? '#003d47' : '#d1ecf1'};
+      color: ${props => props.$isDark ? '#17a2b8' : '#0c5460'};
+    }
+
+    &.status-in-progress {
+      background: ${props => props.$isDark ? '#003d66' : '#cce5ff'};
+      color: ${props => props.$isDark ? '#0099ff' : '#004085'};
+    }
+
+    &.status-completed {
+      background: ${props => props.$isDark ? '#1e4620' : '#d4edda'};
+      color: ${props => props.$isDark ? '#4caf50' : '#155724'};
+    }
+
+    &.status-cancelled {
+      background: ${props => props.$isDark ? '#4d1f1f' : '#f8d7da'};
+      color: ${props => props.$isDark ? '#ff6b6b' : '#721c24'};
+    }
+  }
+
+  .actions-cell {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+
+    .btn-cancel,
+    .btn-review {
+      padding: 0.6rem 1rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateY(-2px);
       }
 
-      .booking-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: auto;
-        padding-top: 1rem;
-        border-top: 1px solid ${props => props.$isDark ? '#2d2d44' : '#e0e0e0'};
-        flex-wrap: wrap;
-        gap: 1rem;
-
-        .price {
-          font-size: 1.5rem;
-          font-weight: 700;
-          color: #4700B0;
-        }
-
-        .action-buttons {
-          display: flex;
-          gap: 0.75rem;
-          flex-wrap: wrap;
-        }
-
-        .btn-review {
-          padding: 0.75rem 1.5rem;
-          background: linear-gradient(135deg, #ffd700, #ffed4e);
-          color: #212529;
-          border: none;
-          border-radius: 10px;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-
-          &:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
-          }
-        }
-
-        .btn-cancel {
-          padding: 0.75rem 1.5rem;
-          background: transparent;
-          color: #ff4757;
-          border: 2px solid #ff4757;
-          border-radius: 10px;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.3s ease;
-
-          &:hover {
-            background: #ff4757;
-            color: white;
-          }
-        }
+      &:active {
+        transform: translateY(0);
       }
+    }
+
+    .btn-cancel {
+      background: #dc3545;
+      color: white;
+
+      &:hover {
+        background: #c82333;
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+      }
+    }
+
+    .btn-review {
+      background: linear-gradient(135deg, #ffd700, #ffed4e);
+      color: #212529;
+
+      &:hover {
+        box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+      }
+    }
+  }
+
+  @media (max-width: 1200px) {
+    .bookings-table {
+      font-size: 0.9rem;
+
+      thead th,
+      tbody td {
+        padding: 1rem 0.75rem;
+      }
+    }
+
+    .service-image {
+      width: 50px !important;
+      height: 50px !important;
+    }
+
+    .location-cell span {
+      max-width: 150px !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .table-container {
+      padding: 1rem;
+      overflow-x: scroll;
+    }
+
+    .bookings-table {
+      min-width: 900px;
     }
   }
 `;
@@ -592,7 +766,7 @@ const ModalContent = styled(motion.div)`
       width: 100%;
       padding: 1rem;
       border: 2px solid ${props => props.$isDark ? '#2d2d44' : '#e0e0e0'};
-      background: ${props => props.$isDark ? '#2d2d44' : 'white'};
+      background: ${props => props.$isDark ? '#0f0f1e' : 'white'};
       color: ${props => props.$isDark ? '#fff' : '#212529'};
       border-radius: 10px;
       font-size: 1rem;
@@ -614,7 +788,7 @@ const ModalContent = styled(motion.div)`
   .btn-submit {
     width: 100%;
     padding: 1.25rem;
-    background: #4700B0;
+    background: linear-gradient(135deg, #4700B0, #764ba2);
     color: white;
     border: none;
     border-radius: 10px;
@@ -624,7 +798,6 @@ const ModalContent = styled(motion.div)`
     transition: all 0.3s ease;
 
     &:hover {
-      background: #3a0088;
       transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(71, 0, 176, 0.4);
     }
@@ -632,4 +805,3 @@ const ModalContent = styled(motion.div)`
 `;
 
 export default MyBookings;
-

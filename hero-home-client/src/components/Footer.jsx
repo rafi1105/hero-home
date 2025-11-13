@@ -91,8 +91,8 @@ const Footer = () => {
 
 const FooterWrapper = styled.footer`
   background: ${props => props.$isDark 
-    ? 'rgba(71, 0, 176, 0.8)' 
-    : 'rgba(71, 0, 176, 0.8)'};
+    ? 'linear-gradient(135deg, #4700B0, #000000)' 
+    : 'linear-gradient(135deg, #4700B0, #000000)' };
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-top: 1px solid ${props => props.$isDark 

@@ -71,11 +71,17 @@ export const getServiceById = async (req, res) => {
 // @access  Private
 export const createService = async (req, res) => {
   try {
+    console.log('Received service data:', req.body);
     const service = new Service(req.body);
     const savedService = await service.save();
     res.status(201).json(savedService);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error('Service creation error:', error);
+    console.error('Error details:', error.errors);
+    res.status(400).json({ 
+      message: error.message,
+      errors: error.errors 
+    });
   }
 };
 

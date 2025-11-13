@@ -126,3 +126,26 @@ export const getUserBookings = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// @desc    Get provider bookings
+// @route   GET /api/bookings/provider/:userId
+// @access  Private
+export const getProviderBookings = async (req, res) => {
+  try {
+    const { status } = req.query;
+    
+    let query = { 'provider.userId': req.params.userId };
+    
+    if (status) {
+      query.status = status;
+    }
+    
+    const bookings = await Booking.find(query)
+      .populate('service')
+      .sort({ createdAt: -1 });
+    
+    res.json(bookings);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
