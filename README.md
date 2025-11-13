@@ -7,6 +7,26 @@ A modern fullstack web application connecting users with local service providers
 ![MongoDB](https://img.shields.io/badge/Database-MongoDB-brightgreen)
 ![Firebase](https://img.shields.io/badge/Auth-Firebase-orange)
 
+## 📸 Application Preview
+
+### Home Page
+![Home Page](hero-home-client/public/image/hero-home-client-11-13-2025_09_28_PM.png)
+
+### Service Marketplace
+![Services Page](hero-home-client/public/image/service.png)
+
+### User Authentication
+![Login Page](hero-home-client/public/image/login.png)
+
+### Provider Dashboard
+![Provider Dashboard](hero-home-client/public/image/provider-dashboard.png)
+
+### Pending Services
+![Pending Services](hero-home-client/public/image/pending-services.png)
+
+### My Bookings
+![My Bookings](hero-home-client/public/image/my-booking.png)
+
 ## 🚀 Features
 
 - **User Authentication** - Email/password and Google sign-in via Firebase
@@ -195,38 +215,6 @@ Firebase config is in `src/config/firebase.config.js`
 ## 🌙 Dark Mode
 
 Toggle dark mode using the switch in the header. Preference is saved to localStorage.
-
-## 📸 Screenshots
-
-### Home Page
-The landing page features a hero slider with featured services and smooth animations.
-
-![Home Page](hero-home-client/public/image/hero-home-client-11-13-2025_09_28_PM.png)
-
-### Service Marketplace
-Browse all available services with search, filter, and category options.
-
-![Services Page](hero-home-client/public/image/service.png)
-
-### User Authentication
-Secure login with email/password or Google sign-in via Firebase.
-
-![Login Page](hero-home-client/public/image/login.png)
-
-### Provider Dashboard
-Service providers can manage their services with real-time status updates.
-
-![Provider Dashboard](hero-home-client/public/image/provider-dashboard.png)
-
-### Pending Services
-Track and manage pending service requests efficiently.
-
-![Pending Services](hero-home-client/public/image/pending-services.png)
-
-### My Bookings
-Users can view and manage all their service bookings in one place.
-
-![My Bookings](hero-home-client/public/image/my-booking.png)
 
 ## 🤝 Contributing
 
