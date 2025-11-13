@@ -214,6 +214,10 @@ const RegisterWrapper = styled.div`
   .register-container {
     width: 100%;
     max-width: 450px;
+
+    @media (max-width: 480px) {
+      max-width: 100%;
+    }
   }
 
   .register-card {

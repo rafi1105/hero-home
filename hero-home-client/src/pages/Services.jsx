@@ -190,6 +190,14 @@ const ServicesWrapper = styled.div`
     padding: 4rem 0;
     text-align: center;
 
+    @media (max-width: 768px) {
+      padding: 3rem 0;
+    }
+
+    @media (max-width: 480px) {
+      padding: 2rem 0;
+    }
+
     h1 {
       font-size: 3rem;
       margin-bottom: 0.5rem;
@@ -197,11 +205,23 @@ const ServicesWrapper = styled.div`
       @media (max-width: 768px) {
         font-size: 2rem;
       }
+
+      @media (max-width: 480px) {
+        font-size: 1.5rem;
+      }
     }
 
     p {
       font-size: 1.2rem;
       opacity: 0.9;
+
+      @media (max-width: 768px) {
+        font-size: 1rem;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 0.9rem;
+      }
     }
   }
 
@@ -209,6 +229,14 @@ const ServicesWrapper = styled.div`
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 2rem;
+
+    @media (max-width: 768px) {
+      padding: 0 1.5rem;
+    }
+
+    @media (max-width: 480px) {
+      padding: 0 1rem;
+    }
   }
 
   .search-filter-section {
@@ -372,8 +400,19 @@ const ServicesWrapper = styled.div`
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: 2rem;
 
+    @media (max-width: 1024px) {
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+      gap: 1rem;
     }
   }
 

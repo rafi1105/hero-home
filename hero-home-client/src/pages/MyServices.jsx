@@ -382,14 +382,34 @@ const MyServicesWrapper = styled.div`
   padding: 3rem 0;
   background: ${props => props.$isDark ? '#0f0f1e' : '#f8f9fa'};
 
+  @media (max-width: 768px) {
+    padding: 2rem 0;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1.5rem 0;
+  }
+
   .container {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 2rem;
+
+    @media (max-width: 768px) {
+      padding: 0 1.5rem;
+    }
+
+    @media (max-width: 480px) {
+      padding: 0 1rem;
+    }
   }
 
   .header {
     margin-bottom: 3rem;
+
+    @media (max-width: 768px) {
+      margin-bottom: 2rem;
+    }
 
     h1 {
       font-size: 3rem;
@@ -404,6 +424,10 @@ const MyServicesWrapper = styled.div`
       @media (max-width: 768px) {
         font-size: 2rem;
       }
+
+      @media (max-width: 480px) {
+        font-size: 1.6rem;
+      }
     }
 
     .tabs {
@@ -413,6 +437,11 @@ const MyServicesWrapper = styled.div`
       padding: 0.5rem;
       border-radius: 15px;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+
+      @media (max-width: 768px) {
+        gap: 0.5rem;
+        padding: 0.4rem;
+      }
 
       button {
         flex: 1;
@@ -425,6 +454,16 @@ const MyServicesWrapper = styled.div`
         cursor: pointer;
         border-radius: 10px;
         transition: all 0.3s ease;
+
+        @media (max-width: 768px) {
+          padding: 0.8rem 1rem;
+          font-size: 1rem;
+        }
+
+        @media (max-width: 480px) {
+          padding: 0.7rem 0.8rem;
+          font-size: 0.9rem;
+        }
 
         &.active {
           background: ${props => props.$isDark 
@@ -449,11 +488,21 @@ const MyServicesWrapper = styled.div`
     @media (max-width: 768px) {
       flex-direction: column;
       gap: 1rem;
+      align-items: stretch;
     }
 
     h2 {
       font-size: 2rem;
       color: ${props => props.$isDark ? '#fff' : '#212529'};
+
+      @media (max-width: 768px) {
+        font-size: 1.6rem;
+        text-align: center;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 1.4rem;
+      }
     }
 
     .btn-add {

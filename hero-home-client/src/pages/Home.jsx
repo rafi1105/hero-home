@@ -342,6 +342,10 @@ const HomeWrapper = styled.div`
     color: white;
     padding: 2rem;
 
+    @media (max-width: 480px) {
+      padding: 1.5rem 1rem;
+    }
+
     h1 {
       font-size: 3.5rem;
       font-weight: 800;
@@ -350,6 +354,11 @@ const HomeWrapper = styled.div`
 
       @media (max-width: 768px) {
         font-size: 2rem;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 1.6rem;
+        margin-bottom: 0.8rem;
       }
     }
 
@@ -361,6 +370,12 @@ const HomeWrapper = styled.div`
 
       @media (max-width: 768px) {
         font-size: 1.1rem;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+        max-width: 90%;
       }
     }
 
@@ -380,6 +395,12 @@ const HomeWrapper = styled.div`
       display: flex;
       align-items: center;
       justify-content: center;
+
+      @media (max-width: 480px) {
+        height: 2.5rem;
+        padding: 0 1.5rem;
+        font-size: 16px;
+      }
 
       &:hover {
         color: #fff;
@@ -414,6 +435,14 @@ const HomeWrapper = styled.div`
   .services-section {
     padding: 5rem 0;
     background: ${props => props.$isDark ? '#1a1a2e' : '#f8f9fa'};
+
+    @media (max-width: 768px) {
+      padding: 3rem 0;
+    }
+
+    @media (max-width: 480px) {
+      padding: 2rem 0;
+    }
   }
 
   .no-services {
@@ -432,11 +461,23 @@ const HomeWrapper = styled.div`
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 2rem;
+
+    @media (max-width: 768px) {
+      padding: 0 1.5rem;
+    }
+
+    @media (max-width: 480px) {
+      padding: 0 1rem;
+    }
   }
 
   .section-header {
     text-align: center;
     margin-bottom: 3rem;
+
+    @media (max-width: 768px) {
+      margin-bottom: 2rem;
+    }
 
     h2 {
       font-size: 2.5rem;
@@ -445,13 +486,25 @@ const HomeWrapper = styled.div`
       color: ${props => props.$isDark ? '#fff' : '#212529'};
 
       @media (max-width: 768px) {
-        font-size: 2rem;
+        font-size: 1.8rem;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 1.5rem;
       }
     }
 
     p {
       font-size: 1.1rem;
       color: ${props => props.$isDark ? '#aaa' : '#6c757d'};
+
+      @media (max-width: 768px) {
+        font-size: 1rem;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 0.95rem;
+      }
     }
   }
 
@@ -460,8 +513,18 @@ const HomeWrapper = styled.div`
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: 2rem;
 
+    @media (max-width: 1024px) {
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 480px) {
+      gap: 1rem;
     }
   }
 
@@ -480,6 +543,10 @@ const HomeWrapper = styled.div`
       position: relative;
       height: 250px;
       overflow: hidden;
+
+      @media (max-width: 480px) {
+        height: 200px;
+      }
 
       img {
         width: 100%;
@@ -522,10 +589,18 @@ const HomeWrapper = styled.div`
     .service-content {
       padding: 1.5rem;
 
+      @media (max-width: 480px) {
+        padding: 1.25rem;
+      }
+
       h3 {
         font-size: 1.3rem;
         margin-bottom: 0.5rem;
         color: ${props => props.$isDark ? '#fff' : '#212529'};
+
+        @media (max-width: 480px) {
+          font-size: 1.15rem;
+        }
       }
 
       .provider-name {
@@ -533,11 +608,19 @@ const HomeWrapper = styled.div`
         font-weight: 600;
         font-size: 0.95rem;
         margin-bottom: 0.5rem;
+
+        @media (max-width: 480px) {
+          font-size: 0.9rem;
+        }
       }
 
       p {
         color: ${props => props.$isDark ? '#aaa' : '#6c757d'};
         margin-bottom: 1rem;
+
+        @media (max-width: 480px) {
+          font-size: 0.95rem;
+        }
       }
 
       .service-footer {
@@ -619,6 +702,14 @@ const HomeWrapper = styled.div`
   .why-choose-section {
     padding: 5rem 0;
     background: ${props => props.$isDark ? '#0f0f1e' : 'white'};
+
+    @media (max-width: 768px) {
+      padding: 3rem 0;
+    }
+
+    @media (max-width: 480px) {
+      padding: 2rem 0;
+    }
   }
 
   .features-grid {
@@ -665,6 +756,14 @@ const HomeWrapper = styled.div`
   .testimonials-section {
     padding: 5rem 0;
     background: ${props => props.$isDark ? '#1a1a2e' : '#f8f9fa'};
+
+    @media (max-width: 768px) {
+      padding: 3rem 0;
+    }
+
+    @media (max-width: 480px) {
+      padding: 2rem 0;
+    }
   }
 
   .testimonials-grid {

@@ -112,9 +112,16 @@ const FooterWrapper = styled.footer`
     gap: 2rem;
     margin-bottom: 2rem;
 
+    @media (max-width: 1024px) {
+      padding: 0 1.5rem;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
       text-align: center;
+      padding: 0 1rem;
     }
   }
 

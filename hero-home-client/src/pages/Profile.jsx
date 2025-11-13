@@ -417,6 +417,11 @@ const ProfileWrapper = styled.div`
 
     @media (max-width: 768px) {
       padding: 2rem;
+      border-radius: 15px;
+    }
+
+    @media (max-width: 480px) {
+      padding: 1.5rem;
     }
   }
 

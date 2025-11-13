@@ -292,10 +292,26 @@ const ServiceDetailsWrapper = styled.div`
   padding: 3rem 0;
   background: ${props => props.$isDark ? '#0f0f1e' : '#f8f9fa'};
 
+  @media (max-width: 768px) {
+    padding: 2rem 0;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1.5rem 0;
+  }
+
   .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 2rem;
+
+    @media (max-width: 768px) {
+      padding: 0 1.5rem;
+    }
+
+    @media (max-width: 480px) {
+      padding: 0 1rem;
+    }
   }
 
   .details-card {
@@ -310,12 +326,24 @@ const ServiceDetailsWrapper = styled.div`
     @media (max-width: 968px) {
       grid-template-columns: 1fr;
     }
+
+    @media (max-width: 480px) {
+      border-radius: 15px;
+    }
   }
 
   .service-image {
     position: relative;
     height: 100%;
     min-height: 400px;
+
+    @media (max-width: 768px) {
+      min-height: 300px;
+    }
+
+    @media (max-width: 480px) {
+      min-height: 250px;
+    }
 
     img {
       width: 100%;
@@ -339,10 +367,26 @@ const ServiceDetailsWrapper = styled.div`
   .service-info {
     padding: 3rem;
 
+    @media (max-width: 768px) {
+      padding: 2rem;
+    }
+
+    @media (max-width: 480px) {
+      padding: 1.5rem;
+    }
+
     h1 {
       font-size: 2.5rem;
       margin-bottom: 1rem;
       color: ${props => props.$isDark ? '#fff' : '#212529'};
+
+      @media (max-width: 768px) {
+        font-size: 2rem;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 1.6rem;
+      }
     }
 
     .provider-info {

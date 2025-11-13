@@ -127,6 +127,16 @@ const HeaderWrapper = styled.header`
     justify-content: space-between;
     align-items: center;
     gap: 3rem;
+
+    @media (max-width: 1024px) {
+      padding: 0 1.5rem;
+      gap: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      padding: 0 1rem;
+      gap: 1rem;
+    }
   }
 
   .logo {

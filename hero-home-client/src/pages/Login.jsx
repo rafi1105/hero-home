@@ -176,6 +176,11 @@ const LoginWrapper = styled.div`
 
     @media (max-width: 768px) {
       padding: 2rem;
+      border-radius: 15px;
+    }
+
+    @media (max-width: 480px) {
+      padding: 1.5rem;
     }
 
     h1 {
@@ -184,12 +189,20 @@ const LoginWrapper = styled.div`
       text-align: center;
       margin-bottom: 0.5rem;
       color: ${props => props.$isDark ? '#fff' : '#212529'};
+
+      @media (max-width: 480px) {
+        font-size: 1.6rem;
+      }
     }
 
     .subtitle {
       text-align: center;
       color: ${props => props.$isDark ? '#aaa' : '#6c757d'};
       margin-bottom: 2rem;
+
+      @media (max-width: 480px) {
+        font-size: 0.95rem;
+      }
     }
   }
 

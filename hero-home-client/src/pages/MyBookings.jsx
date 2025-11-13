@@ -295,15 +295,35 @@ const MyBookingsWrapper = styled.div`
   padding: 3rem 0;
   background: ${props => props.$isDark ? '#0f0f1e' : '#f8f9fa'};
 
+  @media (max-width: 768px) {
+    padding: 2rem 0;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1.5rem 0;
+  }
+
   .container {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 2rem;
+
+    @media (max-width: 768px) {
+      padding: 0 1.5rem;
+    }
+
+    @media (max-width: 480px) {
+      padding: 0 1rem;
+    }
   }
 
   .header-section {
     margin-bottom: 3rem;
     text-align: center;
+
+    @media (max-width: 768px) {
+      margin-bottom: 2rem;
+    }
 
     h1 {
       font-size: 3rem;
@@ -318,11 +338,23 @@ const MyBookingsWrapper = styled.div`
       @media (max-width: 768px) {
         font-size: 2rem;
       }
+
+      @media (max-width: 480px) {
+        font-size: 1.6rem;
+      }
     }
 
     .subtitle {
       font-size: 1.2rem;
       color: ${props => props.$isDark ? '#aaa' : '#6c757d'};
+
+      @media (max-width: 768px) {
+        font-size: 1rem;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 0.95rem;
+      }
     }
   }
 
