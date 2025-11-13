@@ -63,6 +63,7 @@ export const usersAPI = {
   create: (data) => api.post('/users', data),
   update: (id, data) => api.put(`/users/${id}`, data),
   delete: (id) => api.delete(`/users/${id}`),
+  getProviderStats: (userId) => api.get(`/users/${userId}/provider-stats`),
 };
 
 export default api;

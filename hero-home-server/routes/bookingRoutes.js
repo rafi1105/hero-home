@@ -7,14 +7,16 @@ import {
   cancelBooking,
   getUserBookings
 } from '../controllers/bookingController.js';
+import { verifyFirebaseToken } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.get('/', getBookings);
-router.get('/:id', getBookingById);
-router.post('/', createBooking);
-router.put('/:id/status', updateBookingStatus);
-router.put('/:id/cancel', cancelBooking);
-router.get('/user/:userId', getUserBookings);
+// All booking routes are protected - require authentication
+router.get('/', verifyFirebaseToken, getBookings);
+router.get('/:id', verifyFirebaseToken, getBookingById);
+router.post('/', verifyFirebaseToken, createBooking);
+router.put('/:id/status', verifyFirebaseToken, updateBookingStatus);
+router.put('/:id/cancel', verifyFirebaseToken, cancelBooking);
+router.get('/user/:userId', verifyFirebaseToken, getUserBookings);
 
 export default router;

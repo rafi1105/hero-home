@@ -85,7 +85,7 @@ const Home = () => {
   ];
 
   return (
-    <HomeWrapper $$isDark={isDarkMode}>
+    <HomeWrapper $isDark={isDarkMode}>
       {/* Hero Section */}
       <section className="hero-section">
         <Swiper
@@ -165,7 +165,7 @@ const Home = () => {
                     <div className="service-footer">
                       <div className="service-rating">
                         <FaStar />
-                        <span>{service.rating}</span>
+                        <span>{service.rating?.average?.toFixed(1) || 'N/A'}</span>
                       </div>
                       <div className="service-price">${service.price}/hr</div>
                     </div>

@@ -9,6 +9,7 @@ import {
   getTopRatedServices,
   addReview
 } from '../controllers/serviceController.js';
+import { verifyFirebaseToken } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
@@ -17,11 +18,11 @@ router.get('/', getServices);
 router.get('/top-rated', getTopRatedServices);
 router.get('/:id', getServiceById);
 
-// Protected routes (add authentication middleware in production)
-router.post('/', createService);
-router.put('/:id', updateService);
-router.delete('/:id', deleteService);
-router.get('/user/:userId', getMyServices);
-router.post('/:id/review', addReview);
+// Protected routes - require Firebase authentication
+router.post('/', verifyFirebaseToken, createService);
+router.put('/:id', verifyFirebaseToken, updateService);
+router.delete('/:id', verifyFirebaseToken, deleteService);
+router.get('/user/:userId', verifyFirebaseToken, getMyServices);
+router.post('/:id/review', verifyFirebaseToken, addReview);
 
 export default router;

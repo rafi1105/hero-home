@@ -1,6 +1,6 @@
 import Service from '../models/Service.js';
 
-// @desc    Get all services
+// @desc    Get all services with advanced search
 // @route   GET /api/services
 // @access  Public
 export const getServices = async (req, res) => {
@@ -13,8 +13,15 @@ export const getServices = async (req, res) => {
       query.category = category;
     }
     
+    // Case-insensitive search using $regex and $or
     if (search) {
-      query.$text = { $search: search };
+      const searchRegex = { $regex: search, $options: 'i' }; // 'i' = case-insensitive
+      query.$or = [
+        { name: searchRegex },
+        { description: searchRegex },
+        { category: searchRegex },
+        { 'provider.name': searchRegex }
+      ];
     }
     
     // Price range filtering using MongoDB operators
