@@ -3,13 +3,11 @@ import mongoose from 'mongoose';
 const userSchema = new mongoose.Schema({
   firebaseUid: {
     type: String,
-    required: true,
-    unique: true
+    required: true
   },
   email: {
     type: String,
     required: true,
-    unique: true,
     lowercase: true,
     trim: true
   },
@@ -62,9 +60,9 @@ const userSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Indexes
-userSchema.index({ email: 1 });
-userSchema.index({ firebaseUid: 1 });
+// Indexes (unique indexes)
+userSchema.index({ email: 1 }, { unique: true });
+userSchema.index({ firebaseUid: 1 }, { unique: true });
 
 const User = mongoose.model('User', userSchema);
 
