@@ -64,11 +64,13 @@ const Register = () => {
     } catch (error) {
       console.error('Registration error:', error);
       if (error.code === 'auth/email-already-in-use') {
-        toast.error('Email already in use');
+        toast.error('Email already in use. Please use a different email or try logging in.');
       } else if (error.code === 'auth/invalid-email') {
         toast.error('Invalid email address');
       } else if (error.code === 'auth/weak-password') {
         toast.error('Password is too weak');
+      } else if (error.code === 'auth/operation-not-allowed') {
+        toast.error('Email/password sign-up is currently disabled. Please contact support or try signing in with Google.');
       } else {
         toast.error('Failed to create account. Please try again.');
       }
@@ -85,7 +87,20 @@ const Register = () => {
       navigate('/');
     } catch (error) {
       console.error('Google signup error:', error);
-      toast.error('Failed to sign up with Google');
+      
+      // Handle specific Google Sign-In errors
+      if (error.code === 'auth/popup-closed-by-user') {
+        toast.info('Sign-in cancelled. Please try again.');
+      } else if (error.code === 'auth/popup-blocked') {
+        toast.error('Popup blocked by browser. Please allow popups and try again.');
+      } else if (error.code === 'auth/cancelled-popup-request') {
+        // User opened another popup, ignore this error
+        return;
+      } else if (error.code === 'auth/account-exists-with-different-credential') {
+        toast.error('An account already exists with the same email address but different sign-in credentials.');
+      } else {
+        toast.error('Failed to sign up with Google. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
