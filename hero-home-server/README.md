@@ -84,19 +84,21 @@ NODE_ENV=development
 PORT=5000
 
 # MongoDB Connection
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/herohome?retryWrites=true&w=majority
+MONGODB_URI=your_mongodb_connection_string_here
 
 # Firebase Admin SDK (Option 1: Base64 - Recommended for Production)
-FIREBASE_SERVICE_KEY=<base64-encoded-service-account-json>
+FIREBASE_SERVICE_KEY=your_base64_encoded_service_account_here
 
 # Firebase Admin SDK (Option 2: Individual Variables - Fallback)
 FIREBASE_PROJECT_ID=your-project-id
-FIREBASE_CLIENT_EMAIL=firebase-adminsdk-xxxxx@your-project-id.iam.gserviceaccount.com
-FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
+FIREBASE_CLIENT_EMAIL=your-service-account-email
+FIREBASE_PRIVATE_KEY=your-private-key-here
 
 # Client URL (for CORS)
 CLIENT_URL=http://localhost:5173
 ```
+
+**Note:** Replace all placeholder values with your actual credentials. Never commit the `.env` file to version control.
 
 ### 4️⃣ Firebase Service Account Setup
 
