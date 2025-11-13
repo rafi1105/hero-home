@@ -6,6 +6,8 @@ import {
   onAuthStateChanged,
   GoogleAuthProvider,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   updateProfile,
   sendPasswordResetEmail
 } from 'firebase/auth';
@@ -40,9 +42,29 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Sign in with Google
-  const signInWithGoogle = () => {
+  const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
-    return signInWithPopup(auth, provider);
+    // Add custom parameters to improve the sign-in experience
+    provider.setCustomParameters({
+      prompt: 'select_account'
+    });
+    
+    try {
+      // Try popup first
+      return await signInWithPopup(auth, provider);
+    } catch (error) {
+      // If popup is blocked or fails due to COOP, fall back to redirect
+      if (
+        error.code === 'auth/popup-blocked' || 
+        error.code === 'auth/popup-closed-by-user' ||
+        error.code === 'auth/cancelled-popup-request'
+      ) {
+        console.log('Popup blocked, using redirect method instead');
+        return await signInWithRedirect(auth, provider);
+      }
+      // Re-throw other errors
+      throw error;
+    }
   };
 
   // Sign out
@@ -61,6 +83,21 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    // Check for redirect result on mount
+    const checkRedirectResult = async () => {
+      try {
+        const result = await getRedirectResult(auth);
+        if (result) {
+          // User successfully signed in with redirect
+          console.log('Successfully signed in with redirect');
+        }
+      } catch (error) {
+        console.error('Error handling redirect result:', error);
+      }
+    };
+    
+    checkRedirectResult();
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
       

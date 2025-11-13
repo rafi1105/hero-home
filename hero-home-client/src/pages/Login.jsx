@@ -45,11 +45,15 @@ const Login = () => {
     } catch (error) {
       console.error('Login error:', error);
       if (error.code === 'auth/user-not-found') {
-        toast.error('No account found with this email');
+        toast.error('No account found with this email. Please sign up first.');
       } else if (error.code === 'auth/wrong-password') {
-        toast.error('Incorrect password');
+        toast.error('Incorrect password. Please try again.');
       } else if (error.code === 'auth/invalid-email') {
         toast.error('Invalid email address');
+      } else if (error.code === 'auth/user-disabled') {
+        toast.error('This account has been disabled. Please contact support.');
+      } else if (error.code === 'auth/invalid-credential') {
+        toast.error('Invalid email or password. Please check your credentials and try again.');
       } else {
         toast.error('Failed to login. Please try again.');
       }
@@ -66,7 +70,20 @@ const Login = () => {
       navigate(from, { replace: true });
     } catch (error) {
       console.error('Google login error:', error);
-      toast.error('Failed to login with Google');
+      
+      // Handle specific Google Sign-In errors
+      if (error.code === 'auth/popup-closed-by-user') {
+        toast.info('Sign-in cancelled. Please try again.');
+      } else if (error.code === 'auth/popup-blocked') {
+        toast.error('Popup blocked by browser. Please allow popups and try again.');
+      } else if (error.code === 'auth/cancelled-popup-request') {
+        // User opened another popup, ignore this error
+        return;
+      } else if (error.code === 'auth/account-exists-with-different-credential') {
+        toast.error('An account already exists with the same email address but different sign-in credentials.');
+      } else {
+        toast.error('Failed to login with Google. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
