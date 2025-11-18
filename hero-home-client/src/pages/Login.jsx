@@ -44,12 +44,22 @@ const Login = () => {
       navigate(from, { replace: true });
     } catch (error) {
       console.error('Login error:', error);
+      
+      // Enhanced error messages
       if (error.code === 'auth/user-not-found') {
-        toast.error('No account found with this email');
+        toast.error('No account found with this email. Please sign up first.');
       } else if (error.code === 'auth/wrong-password') {
-        toast.error('Incorrect password');
+        toast.error('Incorrect password. Please try again.');
       } else if (error.code === 'auth/invalid-email') {
-        toast.error('Invalid email address');
+        toast.error('Invalid email address format.');
+      } else if (error.code === 'auth/user-disabled') {
+        toast.error('This account has been disabled. Contact support.');
+      } else if (error.code === 'auth/too-many-requests') {
+        toast.error('Too many failed attempts. Please try again later.');
+      } else if (error.code === 'auth/operation-not-allowed') {
+        toast.error('Email/password sign-in is not enabled. Contact support.');
+      } else if (error.code === 'auth/invalid-credential') {
+        toast.error('Invalid email or password. Please check your credentials.');
       } else {
         toast.error('Failed to login. Please try again.');
       }
@@ -66,7 +76,24 @@ const Login = () => {
       navigate(from, { replace: true });
     } catch (error) {
       console.error('Google login error:', error);
-      toast.error('Failed to login with Google');
+      
+      // Enhanced error messages
+      if (error.code === 'auth/popup-closed-by-user') {
+        toast.error('Sign-in popup was closed. Please try again.');
+      } else if (error.code === 'auth/popup-blocked') {
+        toast.info('Popup blocked by browser. Redirecting to sign-in page...');
+        // Redirect will happen automatically from AuthContext
+      } else if (error.code === 'auth/cancelled-popup-request') {
+        toast.warning('Sign-in cancelled. Please try again.');
+      } else if (error.code === 'auth/operation-not-allowed') {
+        toast.error('Google sign-in is not enabled. Please contact support.');
+      } else if (error.code === 'auth/unauthorized-domain') {
+        toast.error('This domain is not authorized for Google sign-in.');
+      } else if (error.code === 'auth/account-exists-with-different-credential') {
+        toast.error('An account already exists with this email using a different sign-in method.');
+      } else {
+        toast.error('Failed to login with Google. Please try again.');
+      }
     } finally {
       setLoading(false);
     }

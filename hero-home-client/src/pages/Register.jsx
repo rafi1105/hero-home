@@ -63,12 +63,18 @@ const Register = () => {
       navigate('/');
     } catch (error) {
       console.error('Registration error:', error);
+      
+      // Enhanced error messages
       if (error.code === 'auth/email-already-in-use') {
-        toast.error('Email already in use');
+        toast.error('This email is already registered. Try logging in instead.');
       } else if (error.code === 'auth/invalid-email') {
-        toast.error('Invalid email address');
+        toast.error('Invalid email address format.');
       } else if (error.code === 'auth/weak-password') {
-        toast.error('Password is too weak');
+        toast.error('Password is too weak. Use at least 6 characters with uppercase and lowercase letters.');
+      } else if (error.code === 'auth/operation-not-allowed') {
+        toast.error('Email/password sign-up is not enabled. Contact support.');
+      } else if (error.code === 'auth/too-many-requests') {
+        toast.error('Too many attempts. Please try again later.');
       } else {
         toast.error('Failed to create account. Please try again.');
       }
@@ -85,7 +91,23 @@ const Register = () => {
       navigate('/');
     } catch (error) {
       console.error('Google signup error:', error);
-      toast.error('Failed to sign up with Google');
+      
+      // Enhanced error messages
+      if (error.code === 'auth/popup-closed-by-user') {
+        toast.error('Sign-in popup was closed. Please try again.');
+      } else if (error.code === 'auth/popup-blocked') {
+        toast.info('Popup blocked by browser. Redirecting to sign-in page...');
+      } else if (error.code === 'auth/cancelled-popup-request') {
+        toast.warning('Sign-in cancelled. Please try again.');
+      } else if (error.code === 'auth/operation-not-allowed') {
+        toast.error('Google sign-in is not enabled. Please contact support.');
+      } else if (error.code === 'auth/unauthorized-domain') {
+        toast.error('This domain is not authorized for Google sign-in.');
+      } else if (error.code === 'auth/account-exists-with-different-credential') {
+        toast.error('An account already exists with this email. Try logging in instead.');
+      } else {
+        toast.error('Failed to sign up with Google. Please try again.');
+      }
     } finally {
       setLoading(false);
     }

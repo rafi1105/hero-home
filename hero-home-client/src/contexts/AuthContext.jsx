@@ -6,6 +6,8 @@ import {
   onAuthStateChanged,
   GoogleAuthProvider,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   updateProfile,
   sendPasswordResetEmail
 } from 'firebase/auth';
@@ -45,10 +47,28 @@ export const AuthProvider = ({ children }) => {
     return signInWithEmailAndPassword(auth, email, password);
   };
 
-  // Sign in with Google
-  const signInWithGoogle = () => {
+  // Sign in with Google (with popup and redirect fallback)
+  const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
-    return signInWithPopup(auth, provider);
+    provider.setCustomParameters({
+      prompt: 'select_account'
+    });
+    
+    try {
+      // Try popup first
+      return await signInWithPopup(auth, provider);
+    } catch (error) {
+      // If popup fails due to CORP or browser blocking, use redirect
+      if (
+        error.code === 'auth/popup-blocked' ||
+        error.code === 'auth/popup-closed-by-user' ||
+        error.code === 'auth/cancelled-popup-request'
+      ) {
+        console.log('Popup blocked, using redirect method...');
+        return await signInWithRedirect(auth, provider);
+      }
+      throw error;
+    }
   };
 
   // Sign out
@@ -74,6 +94,18 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     let tokenRefreshInterval;
+
+    // Handle redirect result on component mount
+    getRedirectResult(auth)
+      .then((result) => {
+        if (result) {
+          console.log('Redirect sign-in successful');
+        }
+      })
+      .catch((error) => {
+        console.error('Redirect sign-in error:', error);
+        setError(error);
+      });
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       try {
