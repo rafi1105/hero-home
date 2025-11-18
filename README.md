@@ -1,6 +1,7 @@
 # HomeHero - Service Provider Platform
 
 A modern fullstack web application connecting users with local service providers. Built with React, Node.js, Express, and MongoDB.
+![Live Link](https://herohome-e9276.web.app/)
 
 ![HomeHero](https://img.shields.io/badge/React-19.2.0-blue)
 ![Node.js](https://img.shields.io/badge/Node.js-Express-green)
