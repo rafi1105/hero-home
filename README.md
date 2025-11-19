@@ -227,6 +227,15 @@ Toggle dark mode using the switch in the header. Preference is saved to localSto
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
+### Branch Protection
+
+The `main` branch is protected with the following rules:
+- No force pushes or deletions
+- Required status checks (CI must pass)
+- Pull request reviews required before merging
+
+See [BRANCH_PROTECTION.md](BRANCH_PROTECTION.md) for detailed setup instructions.
+
 ## 📄 License
 
 This project is licensed under the ISC License.

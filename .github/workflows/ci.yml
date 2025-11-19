@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: |
+          hero-home-client/package-lock.json
+          hero-home-server/package-lock.json
+    
+    # Client checks
+    - name: Install client dependencies
+      working-directory: ./hero-home-client
+      run: npm ci
+    
+    - name: Lint client code
+      working-directory: ./hero-home-client
+      run: npm run lint || echo "Linting warnings found - please review"
+      continue-on-error: true
+    
+    - name: Build client
+      working-directory: ./hero-home-client
+      run: npm run build
+    
+    # Server checks
+    - name: Install server dependencies
+      working-directory: ./hero-home-server
+      run: npm ci
+    
+    - name: Check server syntax
+      working-directory: ./hero-home-server
+      run: node --check server.js
